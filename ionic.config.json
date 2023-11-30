@@ -1,0 +1,7 @@
+{
+  "name": "punk-brewser",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
