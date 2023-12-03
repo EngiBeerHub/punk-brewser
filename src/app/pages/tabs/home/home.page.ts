@@ -10,12 +10,11 @@ import {
   IonCardSubtitle,
   IonCardContent,
   IonImg,
-  IonLoading,
-  IonText, IonIcon
+  IonText, IonIcon, IonSkeletonText, IonThumbnail
 } from "@ionic/angular/standalone";
 import {Beer} from "../../../models/beer";
 import {BeerService} from "../../../services/beer.service";
-import {NgIf} from "@angular/common";
+import {NgClass, NgIf} from "@angular/common";
 
 @Component({
   // selector: 'app-home',
@@ -33,10 +32,12 @@ import {NgIf} from "@angular/common";
     IonCardSubtitle,
     IonCardContent,
     IonImg,
-    IonLoading,
     IonText,
     NgIf,
-    IonIcon
+    IonIcon,
+    IonSkeletonText,
+    IonThumbnail,
+    NgClass
   ],
 })
 export class HomePage implements OnInit {

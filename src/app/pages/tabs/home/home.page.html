@@ -5,19 +5,46 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <!--   show spinner while loading image not only beer   -->
-  <ion-loading [isOpen]="!isLoadedImage" message="Loading..."></ion-loading>
+  <!--   show skeleton texts while loading beer   -->
+  <!--  <ion-loading [isOpen]="!isLoadedImage" message="Loading..."></ion-loading>-->
   <!--   show card when loaded only beer   -->
   <ion-card *ngIf="isLoadedBeer">
     <ion-card-header>
       <ion-card-title>{{beer?.name}}</ion-card-title>
-      <ion-card-subtitle>{{beer?.tagline}}({{beer?.ibu}})</ion-card-subtitle>
+      <ion-card-subtitle>{{beer?.tagline}}({{beer?.abv}}%)</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <ion-img [src]="imageUrl"
-               class="ion-padding-bottom"
-               (ionImgDidLoad)="isLoadedImage = true;"></ion-img>
+      <!--   same vh wigh image   -->
+      <div class="img-container">
+        <!--    lazy loading image    -->
+        <ion-img [src]="imageUrl"
+                 class="ion-padding-bottom"></ion-img>
+      </div>
       <ion-text>{{beer?.description}}</ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- skeleton text while loading -->
+  <ion-card *ngIf="!isLoadedBeer">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-skeleton-text animated="true" style="width: 75%; height: 1.5rem"></ion-skeleton-text>
+      </ion-card-title>
+      <ion-card-subtitle>
+        <ion-skeleton-text animated="true" style="width: 90%"></ion-skeleton-text>
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="ion-justify-content-center" style="display: flex">
+        <ion-skeleton-text animated="true" style="height: 30vh; width: 20vh"
+                           class="ion-margin-bottom"></ion-skeleton-text>
+      </div>
+      <ion-text>
+        <ion-skeleton-text animated="true"></ion-skeleton-text>
+        <ion-skeleton-text animated="true"></ion-skeleton-text>
+        <ion-skeleton-text animated="true"></ion-skeleton-text>
+        <ion-skeleton-text animated="true"></ion-skeleton-text>
+      </ion-text>
     </ion-card-content>
   </ion-card>
 </ion-content>
