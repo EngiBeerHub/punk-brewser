@@ -7,6 +7,7 @@
     "ng": "ng",
     "start": "ionic serve",
     "build": "ionic build",
+    "ios": "ionic build && ionic cap sync && ionic cap run ios -l --external",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
