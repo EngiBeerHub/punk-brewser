@@ -5,16 +5,19 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <!--   show skeleton texts while loading beer   -->
-  <!--  <ion-loading [isOpen]="!isLoadedImage" message="Loading..."></ion-loading>-->
-  <!--   show card when loaded only beer   -->
+  <!-- pull to refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh"></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- show card when loaded beer -->
   <ion-card *ngIf="isLoadedBeer">
     <ion-card-header>
       <ion-card-title>{{beer?.name}}</ion-card-title>
       <ion-card-subtitle>{{beer?.tagline}}({{beer?.abv}}%)</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <!--   same vh with image   -->
+      <!--   prevent height change from lazy loading image   -->
       <div class="img-container ion-margin-bottom">
         <!--    lazy loading image    -->
         <ion-img [src]="imageUrl"></ion-img>
@@ -23,7 +26,7 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- skeleton text while loading -->
+  <!-- show skeleton text while loading beer-->
   <ion-card *ngIf="!isLoadedBeer">
     <ion-card-header>
       <ion-card-title>

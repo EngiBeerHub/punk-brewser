@@ -1,20 +1,26 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
   IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
   IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonContent,
+  IonHeader,
+  IonIcon,
   IonImg,
-  IonText, IonIcon, IonSkeletonText, IonThumbnail
+  IonRefresher,
+  IonRefresherContent,
+  IonSkeletonText,
+  IonText,
+  IonThumbnail,
+  IonTitle,
+  IonToolbar
 } from "@ionic/angular/standalone";
 import {Beer} from "../../../models/beer";
 import {BeerService} from "../../../services/beer.service";
 import {NgClass, NgIf} from "@angular/common";
+import {RefresherCustomEvent} from "@ionic/angular";
 
 @Component({
   // selector: 'app-home',
@@ -37,15 +43,16 @@ import {NgClass, NgIf} from "@angular/common";
     IonIcon,
     IonSkeletonText,
     IonThumbnail,
-    NgClass
+    NgClass,
+    IonRefresher,
+    IonRefresherContent
   ],
 })
 export class HomePage implements OnInit {
   beer?: Beer;
   isLoadedBeer = false;
-  isLoadedImage = false;
   imageUrl?: string;
-  readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
+  private readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
 
   constructor(
     private beerService: BeerService
@@ -53,6 +60,24 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit(): void {
+    this.fetchRandomBeer();
+  }
+
+  /**
+   * Handle pull to refresh
+   * @param event
+   */
+  handleRefresh(event: RefresherCustomEvent) {
+    this.isLoadedBeer = false;
+    this.fetchRandomBeer(event);
+  }
+
+  /**
+   * Fetch a random beer from API
+   * @param event
+   * @private
+   */
+  private fetchRandomBeer(event?: RefresherCustomEvent) {
     this.beerService.getRandomBeer().subscribe({
       next: (fetchedBeer) => {
         this.beer = fetchedBeer;
@@ -62,9 +87,13 @@ export class HomePage implements OnInit {
           : (this.imageUrl = this.altImageUrl);
         // show card
         this.isLoadedBeer = true;
+        // when pull to refresh, complete is necessary
+        event?.target.complete();
       },
-      error: (error) => {
+      error: () => {
         // TODO: not implemented yet.
+        // when pull to refresh, complete is necessary
+        event?.target.complete();
       },
       complete: () => console.log('getRandomBeer completed.'),
     });
