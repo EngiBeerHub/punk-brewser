@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {NgClass, NgForOf, NgIf} from '@angular/common';
+import {RefresherCustomEvent} from '@ionic/angular';
 import {
     IonCard,
     IonCardContent,
@@ -20,18 +22,15 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/angular/standalone";
-import {Beer} from "../../../models/beer";
-import {BeerService} from "../../../services/beer.service";
-import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {RefresherCustomEvent} from "@ionic/angular";
+import {Beer} from "../../models/beer";
+import {BeerService} from "../../services/beer.service";
 
 @Component({
-    // selector: 'app-home',
-    templateUrl: 'home.page.html',
-    styleUrls: ['home.page.scss'],
+    selector: 'app-detail',
+    templateUrl: './detail.page.html',
+    styleUrls: ['./detail.page.scss'],
     standalone: true,
     imports: [
-        IonHeader,
         IonToolbar,
         IonTitle,
         IonContent,
@@ -40,6 +39,7 @@ import {RefresherCustomEvent} from "@ionic/angular";
         IonCardTitle,
         IonCardSubtitle,
         IonCardContent,
+        IonHeader,
         IonImg,
         IonText,
         NgIf,
@@ -52,10 +52,9 @@ import {RefresherCustomEvent} from "@ionic/angular";
         IonList,
         IonItem,
         IonLabel,
-        NgForOf
-    ],
+        NgForOf]
 })
-export class HomePage implements OnInit {
+export class DetailPage implements OnInit {
     beer?: Beer;
     isLoadedBeer = false;
     imageUrl?: string;
