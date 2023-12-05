@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
     <ion-toolbar>
-        <ion-title>Today's Beer</ion-title>
+        <ion-title>Today's Beers</ion-title>
     </ion-toolbar>
 </ion-header>
 
@@ -10,92 +10,53 @@
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
 
-    <!-- show card when loaded beer -->
-    <ion-card *ngIf="isLoadedBeer">
-        <ion-card-header>
-            <ion-card-title>{{beer?.name}}</ion-card-title>
-            <ion-card-subtitle>{{beer?.tagline}}({{beer?.abv}}%)</ion-card-subtitle>
-        </ion-card-header>
-
-        <ion-card-content>
-            <!--   prevent height change from lazy loading image   -->
-            <div class="img-container ion-margin-bottom">
-                <!--    lazy loading image    -->
-                <ion-img [src]="imageUrl"></ion-img>
-            </div>
-
-            <!--   description   -->
-            <ion-text>{{beer?.description}}</ion-text>
-
-            <!--   detailed data   -->
-            <ion-list>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[First Brewed] - {{beer?.first_brewed}}</ion-label>
-                </ion-item>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[Ph] - {{beer?.ph}}</ion-label>
-                </ion-item>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[Contributed By]<br>{{beer?.contributed_by}}</ion-label>
-                </ion-item>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[Brewers Tips]<br>{{beer?.brewers_tips}}</ion-label>
-                </ion-item>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[Food Pairings]<br>{{beer?.food_pairing}}</ion-label>
-                </ion-item>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[Yeast]<br>{{beer!.ingredients.yeast}}</ion-label>
-                </ion-item>
-                <ion-item lines="none">
-                    <ion-label class="ion-text-wrap">
-                        [Malt]<br>
-                        <ion-list>
-                            <ion-item *ngFor="let malt of beer!.ingredients.malt">
-                                <ion-label class="ion-text-wrap">{{malt.name}}
-                                    ({{malt.amount.value}}{{malt.amount.unit}})
-                                </ion-label>
-                            </ion-item>
-                        </ion-list>
-                    </ion-label>
-                </ion-item>
-                <ion-item lines="none">
-                    <ion-label class="ion-text-wrap">
-                        [Hop]<br>
-                        <ion-list>
-                            <ion-item *ngFor="let hop of beer!.ingredients.hops">
-                                <ion-label class="ion-text-wrap">{{hop.name}} ({{hop.attribute}}
-                                    , {{hop.amount.value}}{{hop.amount.unit}})
-                                </ion-label>
-                            </ion-item>
-                        </ion-list>
-                    </ion-label>
-                </ion-item>
-            </ion-list>
-        </ion-card-content>
-    </ion-card>
-
-    <!-- show skeleton text while loading beer-->
-    <ion-card *ngIf="!isLoadedBeer">
-        <ion-card-header>
-            <ion-card-title>
-                <ion-skeleton-text animated="true" style="height: 1.5rem; width: 90%"></ion-skeleton-text>
-            </ion-card-title>
-            <ion-card-subtitle>
-                <ion-skeleton-text animated="true" style="height: 7px; width: 70%"></ion-skeleton-text>
-            </ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-            <div class="ion-justify-content-center ion-margin-bottom" style="display: flex">
-                <ion-skeleton-text animated="true"
-                                   style="height: 29vh; width: 15vh; border-radius: 10px"></ion-skeleton-text>
-            </div>
-            <ion-text>
-                <ion-skeleton-text animated="true" style="height: 14px"></ion-skeleton-text>
-                <ion-skeleton-text animated="true" style="height: 14px; width: 80%"></ion-skeleton-text>
-                <ion-skeleton-text animated="true" style="height: 14px; width: 90%"></ion-skeleton-text>
-                <ion-skeleton-text animated="true" style="height: 14px; width: 70%"></ion-skeleton-text>
-            </ion-text>
-        </ion-card-content>
-    </ion-card>
+    <!--  grid to show cards  -->
+    <ion-grid class="ion-padding">
+        <ion-row class="row">
+            <ion-col>
+                <ion-card>
+                    <ion-card-header>
+                        <ion-card-title>{{beer1?.name}}</ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <!--   prevent height change from lazy loading image   -->
+                        <div class="img-container ion-margin-bottom">
+                            <!--    lazy loading image    -->
+                            <ion-img [src]="imageUrl1"></ion-img>
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+        <ion-row class="row">
+            <ion-col size="6">
+                <ion-card>
+                    <ion-card-header>
+                        <ion-card-subtitle>{{beer2?.name}}</ion-card-subtitle>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <!--   prevent height change from lazy loading image   -->
+                        <div class="img-container ion-margin-bottom">
+                            <!--    lazy loading image    -->
+                            <ion-img [src]="imageUrl2"></ion-img>
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+            <ion-col size="6">
+                <ion-card>
+                    <ion-card-header>
+                        <ion-card-subtitle>{{beer3?.name}}</ion-card-subtitle>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <!--   prevent height change from lazy loading image   -->
+                        <div class="img-container ion-margin-bottom">
+                            <!--    lazy loading image    -->
+                            <ion-img [src]="imageUrl3"></ion-img>
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>

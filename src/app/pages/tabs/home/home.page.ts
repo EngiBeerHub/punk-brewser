@@ -5,7 +5,9 @@ import {
     IonCardHeader,
     IonCardSubtitle,
     IonCardTitle,
+    IonCol,
     IonContent,
+    IonGrid,
     IonHeader,
     IonIcon,
     IonImg,
@@ -14,6 +16,7 @@ import {
     IonList,
     IonRefresher,
     IonRefresherContent,
+    IonRow,
     IonSkeletonText,
     IonText,
     IonThumbnail,
@@ -24,6 +27,7 @@ import {Beer} from "../../../models/beer";
 import {BeerService} from "../../../services/beer.service";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {RefresherCustomEvent} from "@ionic/angular";
+import {concatMap} from "rxjs";
 
 @Component({
     // selector: 'app-home',
@@ -52,14 +56,24 @@ import {RefresherCustomEvent} from "@ionic/angular";
         IonList,
         IonItem,
         IonLabel,
-        NgForOf
+        NgForOf,
+        IonGrid,
+        IonRow,
+        IonCol
     ],
 })
 export class HomePage implements OnInit {
-    beer?: Beer;
-    isLoadedBeer = false;
-    imageUrl?: string;
-    private readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
+    // beers to show on cards
+    beer1?: Beer;
+    imageUrl1?: string;
+    beer2?: Beer;
+    imageUrl2?: string;
+    beer3?: Beer;
+    imageUrl3?: string;
+    // state for skeleton text
+    isLoadedBeers = false;
+    // use when image url is null
+    private readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
     constructor(
         private beerService: BeerService
@@ -67,7 +81,7 @@ export class HomePage implements OnInit {
     }
 
     ngOnInit(): void {
-        this.fetchRandomBeer();
+        this.fetchRandomBeers();
     }
 
     /**
@@ -75,34 +89,43 @@ export class HomePage implements OnInit {
      * @param event
      */
     handleRefresh(event: RefresherCustomEvent) {
-        this.isLoadedBeer = false;
-        this.fetchRandomBeer(event);
+        this.isLoadedBeers = false;
+        this.fetchRandomBeers(event);
     }
 
     /**
-     * Fetch a random beer from API
+     * Fetch random beers from API
      * @param event
      * @private
      */
-    private fetchRandomBeer(event?: RefresherCustomEvent) {
-        this.beerService.getRandomBeer().subscribe({
-            next: (fetchedBeer) => {
-                this.beer = fetchedBeer;
-                // set alternative keg image when image url is null.
-                this.beer.image_url
-                    ? (this.imageUrl = this.beer.image_url)
-                    : (this.imageUrl = this.altImageUrl);
-                // show card
-                this.isLoadedBeer = true;
-                // when pull to refresh, complete is necessary
-                event?.target.complete();
-            },
-            error: () => {
-                // TODO: not implemented yet.
-                // when pull to refresh, complete is necessary
-                event?.target.complete();
-            },
-            complete: () => console.log('getRandomBeer completed.'),
+    private fetchRandomBeers(event?: RefresherCustomEvent) {
+        // fetch 3 beers in order
+        this.beerService.getRandomBeer().pipe(
+            concatMap(firstBeer => {
+                this.beer1 = firstBeer;
+                this.imageUrl1 = firstBeer.image_url
+                    ? firstBeer.image_url
+                    : this.ALT_IMAGE_URL;
+                // start second call
+                return this.beerService.getRandomBeer();
+            }),
+            concatMap(secondBeer => {
+                this.beer2 = secondBeer;
+                this.imageUrl2 = secondBeer.image_url
+                    ? secondBeer.image_url
+                    : this.ALT_IMAGE_URL;
+                // start third call
+                return this.beerService.getRandomBeer();
+            })
+        ).subscribe(thirdBeer => {
+            this.beer3 = thirdBeer;
+            this.imageUrl3 = thirdBeer.image_url
+                ? thirdBeer.image_url
+                : this.ALT_IMAGE_URL;
+            // show card
+            this.isLoadedBeers = true;
+            // when pull to refresh, complete is necessary
+            event?.target.complete();
         });
     }
 }

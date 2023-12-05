@@ -1,7 +1,11 @@
 ion-img::part(image) {
-  max-height: 30vh;
+  max-height: 20vh;
 }
 
 .img-container {
-  height: 30vh
+  //height: 20vh
+}
+
+ion-card {
+  margin: 0 !important;
 }
