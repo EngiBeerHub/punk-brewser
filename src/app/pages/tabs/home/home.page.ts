@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {
+    IonButton,
     IonCard,
     IonCardContent,
     IonCardHeader,
@@ -7,6 +8,8 @@ import {
     IonCardTitle,
     IonCol,
     IonContent,
+    IonFab,
+    IonFabButton,
     IonGrid,
     IonHeader,
     IonIcon,
@@ -28,6 +31,7 @@ import {BeerService} from "../../../services/beer.service";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {RefresherCustomEvent} from "@ionic/angular";
 import {concatMap} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
     // selector: 'app-home',
@@ -59,7 +63,10 @@ import {concatMap} from "rxjs";
         NgForOf,
         IonGrid,
         IonRow,
-        IonCol
+        IonCol,
+        IonButton,
+        IonFab,
+        IonFabButton
     ],
 })
 export class HomePage implements OnInit {
@@ -76,21 +83,13 @@ export class HomePage implements OnInit {
     private readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
     constructor(
-        private beerService: BeerService
+        private beerService: BeerService,
+        private router: Router
     ) {
     }
 
     ngOnInit(): void {
         this.fetchRandomBeers();
-    }
-
-    /**
-     * Handle pull to refresh
-     * @param event
-     */
-    handleRefresh(event: RefresherCustomEvent) {
-        this.isLoadedBeers = false;
-        this.fetchRandomBeers(event);
     }
 
     /**
@@ -127,5 +126,26 @@ export class HomePage implements OnInit {
             // when pull to refresh, complete is necessary
             event?.target.complete();
         });
+    }
+
+    /**
+     * Handle pull to refresh
+     * @param event
+     */
+    handleRefresh(event: RefresherCustomEvent) {
+        this.isLoadedBeers = false;
+        this.fetchRandomBeers(event);
+    }
+
+    onClickCard(beer: Beer) {
+        void this.router.navigate(['/detail'], {state: {beer: beer}});
+    }
+
+    onClickFavButton(event: MouseEvent) {
+        event.stopPropagation();
+    }
+
+    onClickFab() {
+        this.fetchRandomBeers();
     }
 }

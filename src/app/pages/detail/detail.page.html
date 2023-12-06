@@ -1,17 +1,14 @@
 <ion-header [translucent]="true">
     <ion-toolbar>
+        <ion-buttons>
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
         <ion-title>Detail</ion-title>
     </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <!-- pull to refresh -->
-    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
-        <ion-refresher-content></ion-refresher-content>
-    </ion-refresher>
-
-    <!-- show card when loaded beer -->
-    <ion-card *ngIf="isLoadedBeer">
+    <ion-card>
         <ion-card-header>
             <ion-card-title>{{beer?.name}}</ion-card-title>
             <ion-card-subtitle>{{beer?.tagline}}({{beer?.abv}}%)</ion-card-subtitle>
@@ -19,9 +16,16 @@
 
         <ion-card-content>
             <!--   prevent height change from lazy loading image   -->
-            <div class="img-container ion-margin-bottom">
+            <div class="img-container">
                 <!--    lazy loading image    -->
                 <ion-img [src]="imageUrl"></ion-img>
+            </div>
+
+            <!-- favorite button -->
+            <div class="button-container">
+                <ion-button class="ion-no-margin" fill="clear" (click)="onClickButton($event)">
+                    <ion-icon name="star-outline" color="medium"></ion-icon>
+                </ion-button>
             </div>
 
             <!--   description   -->
@@ -76,26 +80,27 @@
     </ion-card>
 
     <!-- show skeleton text while loading beer-->
-    <ion-card *ngIf="!isLoadedBeer">
-        <ion-card-header>
-            <ion-card-title>
-                <ion-skeleton-text animated="true" style="height: 1.5rem; width: 90%"></ion-skeleton-text>
-            </ion-card-title>
-            <ion-card-subtitle>
-                <ion-skeleton-text animated="true" style="height: 7px; width: 70%"></ion-skeleton-text>
-            </ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-            <div class="ion-justify-content-center ion-margin-bottom" style="display: flex">
-                <ion-skeleton-text animated="true"
-                                   style="height: 29vh; width: 15vh; border-radius: 10px"></ion-skeleton-text>
-            </div>
-            <ion-text>
-                <ion-skeleton-text animated="true" style="height: 14px"></ion-skeleton-text>
-                <ion-skeleton-text animated="true" style="height: 14px; width: 80%"></ion-skeleton-text>
-                <ion-skeleton-text animated="true" style="height: 14px; width: 90%"></ion-skeleton-text>
-                <ion-skeleton-text animated="true" style="height: 14px; width: 70%"></ion-skeleton-text>
-            </ion-text>
-        </ion-card-content>
-    </ion-card>
+    <!--    <ion-card *ngIf="!isLoadedBeer">-->
+    <!--        <ion-card-header>-->
+    <!--            <ion-card-title>-->
+    <!--  somehow empty skeleton text make loading image faster...  -->
+    <ion-skeleton-text animated="true" style="width: 0; height: 0"></ion-skeleton-text>
+    <!--            </ion-card-title>-->
+    <!--            <ion-card-subtitle>-->
+    <!--                <ion-skeleton-text animated="true" style="height: 7px; width: 70%"></ion-skeleton-text>-->
+    <!--            </ion-card-subtitle>-->
+    <!--        </ion-card-header>-->
+    <!--        <ion-card-content>-->
+    <!--            <div class="ion-justify-content-center ion-margin-bottom" style="display: flex">-->
+    <!--                <ion-skeleton-text animated="true"-->
+    <!--                                   style="height: 29vh; width: 15vh; border-radius: 10px"></ion-skeleton-text>-->
+    <!--            </div>-->
+    <!--            <ion-text>-->
+    <!--                <ion-skeleton-text animated="true" style="height: 14px"></ion-skeleton-text>-->
+    <!--                <ion-skeleton-text animated="true" style="height: 14px; width: 80%"></ion-skeleton-text>-->
+    <!--                <ion-skeleton-text animated="true" style="height: 14px; width: 90%"></ion-skeleton-text>-->
+    <!--                <ion-skeleton-text animated="true" style="height: 14px; width: 70%"></ion-skeleton-text>-->
+    <!--            </ion-text>-->
+    <!--        </ion-card-content>-->
+    <!--    </ion-card>-->
 </ion-content>

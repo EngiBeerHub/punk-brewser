@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {RefresherCustomEvent} from '@ionic/angular';
 import {
+    IonBackButton,
+    IonButton,
+    IonButtons,
     IonCard,
     IonCardContent,
     IonCardHeader,
@@ -23,7 +25,15 @@ import {
     IonToolbar
 } from "@ionic/angular/standalone";
 import {Beer} from "../../models/beer";
-import {BeerService} from "../../services/beer.service";
+import {addIcons} from "ionicons";
+import {starOutline} from "ionicons/icons";
+
+/**
+ * state passed from parent component
+ */
+export interface BeerState {
+    beer: Beer;
+}
 
 @Component({
     selector: 'app-detail',
@@ -52,56 +62,30 @@ import {BeerService} from "../../services/beer.service";
         IonList,
         IonItem,
         IonLabel,
-        NgForOf]
+        NgForOf,
+        IonBackButton,
+        IonButtons,
+        IonButton
+    ]
 })
 export class DetailPage implements OnInit {
     beer?: Beer;
-    isLoadedBeer = false;
     imageUrl?: string;
     private readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
 
-    constructor(
-        private beerService: BeerService
-    ) {
+    constructor() {
+        addIcons({starOutline});
     }
 
     ngOnInit(): void {
-        this.fetchRandomBeer();
+        // receive beer from previous page
+        this.beer = (history.state as BeerState).beer;
+        this.beer.image_url
+            ? (this.imageUrl = this.beer.image_url)
+            : (this.imageUrl = this.altImageUrl);
     }
 
-    /**
-     * Handle pull to refresh
-     * @param event
-     */
-    handleRefresh(event: RefresherCustomEvent) {
-        this.isLoadedBeer = false;
-        this.fetchRandomBeer(event);
-    }
-
-    /**
-     * Fetch a random beer from API
-     * @param event
-     * @private
-     */
-    private fetchRandomBeer(event?: RefresherCustomEvent) {
-        this.beerService.getRandomBeer().subscribe({
-            next: (fetchedBeer) => {
-                this.beer = fetchedBeer;
-                // set alternative keg image when image url is null.
-                this.beer.image_url
-                    ? (this.imageUrl = this.beer.image_url)
-                    : (this.imageUrl = this.altImageUrl);
-                // show card
-                this.isLoadedBeer = true;
-                // when pull to refresh, complete is necessary
-                event?.target.complete();
-            },
-            error: () => {
-                // TODO: not implemented yet.
-                // when pull to refresh, complete is necessary
-                event?.target.complete();
-            },
-            complete: () => console.log('getRandomBeer completed.'),
-        });
+    onClickButton(event: MouseEvent) {
+        event.stopPropagation();
     }
 }
