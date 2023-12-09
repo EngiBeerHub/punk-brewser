@@ -32,9 +32,9 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {RefresherCustomEvent} from "@ionic/angular";
 import {concatMap} from "rxjs";
 import {Router} from "@angular/router";
+import {CardSummaryComponent} from "../../../components/card-summary/card-summary.component";
 
 @Component({
-  // selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
@@ -66,7 +66,8 @@ import {Router} from "@angular/router";
     IonCol,
     IonButton,
     IonFab,
-    IonFabButton
+    IonFabButton,
+    CardSummaryComponent
   ],
 })
 export class HomePage implements OnInit {
