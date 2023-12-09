@@ -1,106 +1,83 @@
 <ion-header [translucent]="true">
-    <ion-toolbar>
-        <ion-buttons>
-            <ion-back-button></ion-back-button>
-        </ion-buttons>
-        <ion-title>Detail</ion-title>
-    </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detail</ion-title>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <ion-card>
-        <ion-card-header>
-            <ion-card-title>{{beer?.name}}</ion-card-title>
-            <ion-card-subtitle>{{beer?.tagline}}({{beer?.abv}}%)</ion-card-subtitle>
-        </ion-card-header>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ beer?.name }}</ion-card-title>
+      <ion-card-subtitle>{{ beer?.tagline }}({{ beer?.abv }}%)</ion-card-subtitle>
+    </ion-card-header>
 
-        <ion-card-content>
-            <!--   prevent height change from lazy loading image   -->
-            <div class="img-container">
-                <!--    lazy loading image    -->
-                <ion-img [src]="imageUrl"></ion-img>
-            </div>
+    <ion-card-content>
+      <!--   prevent height change from lazy loading image   -->
+      <div class="img-container">
+        <!--    lazy loading image    -->
+        <ion-img [src]="imageUrl"></ion-img>
+      </div>
 
-            <!-- favorite button -->
-            <div class="button-container">
-                <ion-button class="ion-no-margin" fill="clear" (click)="onClickButton($event)">
-                    <ion-icon name="star-outline" color="medium"></ion-icon>
-                </ion-button>
-            </div>
+      <!-- favorite button -->
+      <div class="button-container">
+        <ion-button class="ion-no-margin" fill="clear" (click)="onClickButton($event)">
+          <ion-icon name="star-outline" color="medium"></ion-icon>
+        </ion-button>
+      </div>
 
-            <!--   description   -->
-            <ion-text>{{beer?.description}}</ion-text>
+      <!--   description   -->
+      <ion-text>{{ beer?.description }}</ion-text>
 
-            <!--   detailed data   -->
+      <!--   detailed data   -->
+      <ion-list>
+        <ion-item>
+          <ion-label class="ion-text-wrap">[First Brewed] - {{ beer?.first_brewed }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">[Ph] - {{ beer?.ph }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">[Contributed By]<br>{{ beer?.contributed_by }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">[Brewers Tips]<br>{{ beer?.brewers_tips }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">[Food Pairings]<br>{{ beer?.food_pairing }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label class="ion-text-wrap">[Yeast]<br>{{ beer!.ingredients.yeast }}</ion-label>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap">
+            [Malt]<br>
             <ion-list>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[First Brewed] - {{beer?.first_brewed}}</ion-label>
-                </ion-item>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[Ph] - {{beer?.ph}}</ion-label>
-                </ion-item>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[Contributed By]<br>{{beer?.contributed_by}}</ion-label>
-                </ion-item>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[Brewers Tips]<br>{{beer?.brewers_tips}}</ion-label>
-                </ion-item>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[Food Pairings]<br>{{beer?.food_pairing}}</ion-label>
-                </ion-item>
-                <ion-item>
-                    <ion-label class="ion-text-wrap">[Yeast]<br>{{beer!.ingredients.yeast}}</ion-label>
-                </ion-item>
-                <ion-item lines="none">
-                    <ion-label class="ion-text-wrap">
-                        [Malt]<br>
-                        <ion-list>
-                            <ion-item *ngFor="let malt of beer!.ingredients.malt">
-                                <ion-label class="ion-text-wrap">{{malt.name}}
-                                    ({{malt.amount.value}}{{malt.amount.unit}})
-                                </ion-label>
-                            </ion-item>
-                        </ion-list>
-                    </ion-label>
-                </ion-item>
-                <ion-item lines="none">
-                    <ion-label class="ion-text-wrap">
-                        [Hop]<br>
-                        <ion-list>
-                            <ion-item *ngFor="let hop of beer!.ingredients.hops">
-                                <ion-label class="ion-text-wrap">{{hop.name}} ({{hop.attribute}}
-                                    , {{hop.amount.value}}{{hop.amount.unit}})
-                                </ion-label>
-                            </ion-item>
-                        </ion-list>
-                    </ion-label>
-                </ion-item>
+              <ion-item *ngFor="let malt of beer!.ingredients.malt">
+                <ion-label class="ion-text-wrap">{{ malt.name }}
+                  ({{ malt.amount.value }}{{ malt.amount.unit }})
+                </ion-label>
+              </ion-item>
             </ion-list>
-        </ion-card-content>
-    </ion-card>
+          </ion-label>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap">
+            [Hop]<br>
+            <ion-list>
+              <ion-item *ngFor="let hop of beer!.ingredients.hops">
+                <ion-label class="ion-text-wrap">{{ hop.name }} ({{ hop.attribute }}
+                  , {{ hop.amount.value }}{{ hop.amount.unit }})
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 
-    <!-- show skeleton text while loading beer-->
-    <!--    <ion-card *ngIf="!isLoadedBeer">-->
-    <!--        <ion-card-header>-->
-    <!--            <ion-card-title>-->
-    <!--  somehow empty skeleton text make loading image faster...  -->
-    <ion-skeleton-text animated="true" style="width: 0; height: 0"></ion-skeleton-text>
-    <!--            </ion-card-title>-->
-    <!--            <ion-card-subtitle>-->
-    <!--                <ion-skeleton-text animated="true" style="height: 7px; width: 70%"></ion-skeleton-text>-->
-    <!--            </ion-card-subtitle>-->
-    <!--        </ion-card-header>-->
-    <!--        <ion-card-content>-->
-    <!--            <div class="ion-justify-content-center ion-margin-bottom" style="display: flex">-->
-    <!--                <ion-skeleton-text animated="true"-->
-    <!--                                   style="height: 29vh; width: 15vh; border-radius: 10px"></ion-skeleton-text>-->
-    <!--            </div>-->
-    <!--            <ion-text>-->
-    <!--                <ion-skeleton-text animated="true" style="height: 14px"></ion-skeleton-text>-->
-    <!--                <ion-skeleton-text animated="true" style="height: 14px; width: 80%"></ion-skeleton-text>-->
-    <!--                <ion-skeleton-text animated="true" style="height: 14px; width: 90%"></ion-skeleton-text>-->
-    <!--                <ion-skeleton-text animated="true" style="height: 14px; width: 70%"></ion-skeleton-text>-->
-    <!--            </ion-text>-->
-    <!--        </ion-card-content>-->
-    <!--    </ion-card>-->
+  <ion-skeleton-text animated="true" style="width: 0; height: 0"></ion-skeleton-text>
 </ion-content>

@@ -9,6 +9,7 @@
     "build": "ionic build",
     "ios": "ionic build && ionic cap sync && ionic cap run ios",
     "ioslive": "ionic build && ionic cap sync && ionic cap run ios -l --external",
+    "android": "ionic build && ionic cap sync && ionic cap run android",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"

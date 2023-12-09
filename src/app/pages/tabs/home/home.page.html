@@ -1,96 +1,117 @@
 <ion-header [translucent]="true">
-    <ion-toolbar>
-        <ion-title>Today's Beers</ion-title>
-    </ion-toolbar>
+  <ion-toolbar>
+    <ion-title>Today's Beers</ion-title>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <!-- pull to refresh -->
-    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
-        <ion-refresher-content></ion-refresher-content>
-    </ion-refresher>
+  <!-- pull to refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-    <!-- grid to show cards -->
-    <ion-grid class="ion-padding">
-        <ion-row class="row">
-            <ion-col>
-                <!-- navigate to detail with passing beer -->
-                <ion-card button="true" (click)="beer1 ? onClickCard(beer1) : null ;">
-                    <ion-card-header>
-                        <ion-card-title>{{beer1?.name}}</ion-card-title>
-                    </ion-card-header>
+  <!-- grid to show cards -->
+  <ion-grid class="ion-padding">
+    <ion-row class="row">
+      <ion-col>
+        <!-- navigate to detail with passing beer -->
+        <ion-card *ngIf="isLoadedBeers" button="true" (click)="beer1 ? onClickCard(beer1) : null ;">
+          <ion-card-header>
+            <ion-card-title>{{ beer1?.name }}</ion-card-title>
+          </ion-card-header>
 
-                    <ion-card-content>
-                        <!-- prevent height change from lazy loading image -->
-                        <div class="img-container">
-                            <!-- lazy loading image -->
-                            <ion-img [src]="imageUrl1"></ion-img>
-                        </div>
+          <ion-card-content>
+            <!-- prevent height change from lazy loading image -->
+            <div class="img-container">
+              <!-- lazy loading image -->
+              <ion-img [src]="imageUrl1"></ion-img>
+            </div>
 
-                        <!-- favorite button -->
-                        <div class="button-container">
-                            <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event)">
-                                <ion-icon name="star-outline" color="medium"></ion-icon>
-                            </ion-button>
-                        </div>
-                    </ion-card-content>
-                </ion-card>
-            </ion-col>
-        </ion-row>
+            <!-- favorite button -->
+            <div class="button-container">
+              <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event)">
+                <ion-icon name="star-outline" color="medium"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
 
-        <ion-row class="row">
-            <ion-col size="6">
-                <!-- navigate to detail with passing beer -->
-                <ion-card button="true" (click)="beer2 ? onClickCard(beer2) : null ;">
-                    <ion-card-header>
-                        <ion-card-subtitle>{{beer2?.name}}</ion-card-subtitle>
-                    </ion-card-header>
+        <!-- show skeleton text while loading beer -->
+        <ion-card *ngIf="!isLoadedBeers">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-skeleton-text animated="true" style="height: 1.6rem; width: 90%"></ion-skeleton-text>
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <!-- image -->
+            <div class="ion-justify-content-center" style="display: flex">
+              <ion-skeleton-text animated="true"
+                                 style="height: 19.054vh; width: 10vh; border-radius: 1vh"></ion-skeleton-text>
+            </div>
+            <div class="ion-justify-content-center ion-align-items-center" style="height: 6.25vh; display: flex">
+              <ion-skeleton-text animated="true"
+                                 style="height: 2.5vh; width: 2.5vh; border-radius: 1vh"></ion-skeleton-text>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
 
-                    <ion-card-content>
-                        <!-- prevent height change from lazy loading image -->
-                        <div class="img-container ion-margin-bottom">
-                            <!-- lazy loading image -->
-                            <ion-img [src]="imageUrl2"></ion-img>
-                        </div>
-                        <!-- favorite button -->
-                        <div class="button-container">
-                            <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event)">
-                                <ion-icon name="star-outline" color="medium"></ion-icon>
-                            </ion-button>
-                        </div>
-                    </ion-card-content>
-                </ion-card>
-            </ion-col>
+    <ion-row class="row">
+      <ion-col size="6">
+        <!-- navigate to detail with passing beer -->
+        <ion-card button="true" (click)="beer2 ? onClickCard(beer2) : null ;">
+          <ion-card-header>
+            <ion-card-subtitle>{{ beer2?.name }}</ion-card-subtitle>
+          </ion-card-header>
 
-            <ion-col size="6">
-                <!-- navigate to detail with passing beer -->
-                <ion-card button="true" (click)="beer3 ? onClickCard(beer3) : null ;">
-                    <ion-card-header>
-                        <ion-card-subtitle>{{beer3?.name}}</ion-card-subtitle>
-                    </ion-card-header>
+          <ion-card-content>
+            <!-- prevent height change from lazy loading image -->
+            <div class="img-container ion-margin-bottom">
+              <!-- lazy loading image -->
+              <ion-img [src]="imageUrl2"></ion-img>
+            </div>
+            <!-- favorite button -->
+            <div class="button-container">
+              <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event)">
+                <ion-icon name="star-outline" color="medium"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
 
-                    <ion-card-content>
-                        <!-- prevent height change from lazy loading image -->
-                        <div class="img-container ion-margin-bottom">
-                            <!-- lazy loading image -->
-                            <ion-img [src]="imageUrl3"></ion-img>
-                        </div>
+      <ion-col size="6">
+        <!-- navigate to detail with passing beer -->
+        <ion-card button="true" (click)="beer3 ? onClickCard(beer3) : null ;">
+          <ion-card-header>
+            <ion-card-subtitle>{{ beer3?.name }}</ion-card-subtitle>
+          </ion-card-header>
 
-                        <!-- favorite button -->
-                        <div class="button-container">
-                            <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event)">
-                                <ion-icon name="star-outline" color="medium"></ion-icon>
-                            </ion-button>
-                        </div>
-                    </ion-card-content>
-                </ion-card>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
+          <ion-card-content>
+            <!-- prevent height change from lazy loading image -->
+            <div class="img-container ion-margin-bottom">
+              <!-- lazy loading image -->
+              <ion-img [src]="imageUrl3"></ion-img>
+            </div>
 
-    <ion-fab slot="fixed" vertical="top" horizontal="end">
-        <ion-fab-button (click)="onClickFab()">
-            <ion-icon name="reload-outline"></ion-icon>
-        </ion-fab-button>
-    </ion-fab>
+            <!-- favorite button -->
+            <div class="button-container">
+              <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event)">
+                <ion-icon name="star-outline" color="medium"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- FAB -->
+  <ion-fab slot="fixed" vertical="top" horizontal="end">
+    <ion-fab-button (click)="onClickFab()">
+      <ion-icon name="reload-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
