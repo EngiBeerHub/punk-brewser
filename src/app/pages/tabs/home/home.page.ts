@@ -36,7 +36,7 @@ import {SkeletonSummaryComponent} from "../../../components/skeleton-summary/ske
 
 @Component({
   templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  styles: [],
   standalone: true,
   imports: [
     IonHeader,
@@ -101,33 +101,35 @@ export class HomePage implements OnInit {
   private fetchRandomBeers(event?: RefresherCustomEvent) {
     this.isLoadedBeers = false;
     // fetch 3 beers in order
-    this.beerService.getRandomBeer().pipe(
-      concatMap(firstBeer => {
-        this.beer1 = firstBeer;
-        this.imageUrl1 = firstBeer.image_url
-          ? firstBeer.image_url
+    this.beerService.getRandomBeer()
+      .pipe(
+        concatMap(firstBeer => {
+          this.beer1 = firstBeer;
+          this.imageUrl1 = firstBeer.image_url
+            ? firstBeer.image_url
+            : this.ALT_IMAGE_URL;
+          // start second call
+          return this.beerService.getRandomBeer();
+        }),
+        concatMap(secondBeer => {
+          this.beer2 = secondBeer;
+          this.imageUrl2 = secondBeer.image_url
+            ? secondBeer.image_url
+            : this.ALT_IMAGE_URL;
+          // start third call
+          return this.beerService.getRandomBeer();
+        })
+      )
+      .subscribe(thirdBeer => {
+        this.beer3 = thirdBeer;
+        this.imageUrl3 = thirdBeer.image_url
+          ? thirdBeer.image_url
           : this.ALT_IMAGE_URL;
-        // start second call
-        return this.beerService.getRandomBeer();
-      }),
-      concatMap(secondBeer => {
-        this.beer2 = secondBeer;
-        this.imageUrl2 = secondBeer.image_url
-          ? secondBeer.image_url
-          : this.ALT_IMAGE_URL;
-        // start third call
-        return this.beerService.getRandomBeer();
-      })
-    ).subscribe(thirdBeer => {
-      this.beer3 = thirdBeer;
-      this.imageUrl3 = thirdBeer.image_url
-        ? thirdBeer.image_url
-        : this.ALT_IMAGE_URL;
-      // show card
-      this.isLoadedBeers = true;
-      // when pull to refresh, complete is necessary
-      event?.target.complete();
-    });
+        // show card
+        this.isLoadedBeers = true;
+        // when pull to refresh, complete is necessary
+        event?.target.complete();
+      });
   }
 
   /**

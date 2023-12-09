@@ -6,18 +6,33 @@
 
 <ion-content [fullscreen]="true">
   <!-- beer list -->
-  <ion-list>
-    <ion-item *ngFor="let beer of beers; trackBy: trackByBeerId" (click)="onClickItem(beer)">
+  <ion-list *ngIf="isLoaded1stPage else skeleton">
+    <ion-item *ngFor="let beer of beers; index as i; trackBy: trackByBeerId" (click)="onClickItem(beer)">
       <ion-thumbnail slot="start">
-        <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL"></ion-img>
+        <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL" style="object-fit: contain;"></ion-img>
       </ion-thumbnail>
 
       <ion-label>{{ beer.name }}</ion-label>
     </ion-item>
   </ion-list>
 
+  <!-- show skeleton while loading -->
+  <ng-template #skeleton>
+    <ion-list>
+      <ion-item *ngFor="let item of skeletonArray">
+        <ion-thumbnail slot="start">
+          <ion-skeleton-text animated="true"></ion-skeleton-text>
+        </ion-thumbnail>
+
+        <ion-label>
+          <ion-skeleton-text animated="true"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
+
   <!-- infinite scroll to load next beer list -->
-  <ion-infinite-scroll (ionInfinite)="handleScroll($event)">
+  <ion-infinite-scroll *ngIf="isLoaded1stPage" (ionInfinite)="handleScroll($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>
