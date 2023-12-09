@@ -33,6 +33,7 @@ import {RefresherCustomEvent} from "@ionic/angular";
 import {concatMap} from "rxjs";
 import {Router} from "@angular/router";
 import {CardSummaryComponent} from "../../../components/card-summary/card-summary.component";
+import {SkeletonSummaryComponent} from "../../../components/skeleton-summary/skeleton-summary.component";
 
 @Component({
   templateUrl: 'home.page.html',
@@ -67,7 +68,8 @@ import {CardSummaryComponent} from "../../../components/card-summary/card-summar
     IonButton,
     IonFab,
     IonFabButton,
-    CardSummaryComponent
+    CardSummaryComponent,
+    SkeletonSummaryComponent
   ],
 })
 export class HomePage implements OnInit {

@@ -14,49 +14,41 @@
   <ion-grid class="ion-padding">
     <ion-row class="row">
       <ion-col>
+        <!-- card to show beer -->
         <app-card-summary
           *ngIf="isLoadedBeers"
           [useTitle]="true"
           [beer]="beer1">
         </app-card-summary>
 
-        <!-- show skeleton text while loading beer -->
-        <ion-card *ngIf="!isLoadedBeers" style="margin: 0;">
-          <ion-card-header>
-            <ion-card-title>
-              <ion-skeleton-text animated="true" style="height: 1.6rem; width: 90%"></ion-skeleton-text>
-            </ion-card-title>
-          </ion-card-header>
-          <ion-card-content style="margin-bottom: 0">
-            <!-- image -->
-            <div class="ion-justify-content-center" style="display: flex">
-              <ion-skeleton-text animated="true"
-                                 style="height: 19.054vh; width: 10vh; border-radius: 1vh"></ion-skeleton-text>
-            </div>
-            <div class="ion-justify-content-center ion-align-items-center" style="height: 6.25vh; display: flex">
-              <ion-skeleton-text animated="true"
-                                 style="height: 2.5vh; width: 2.5vh; border-radius: 1vh"></ion-skeleton-text>
-            </div>
-          </ion-card-content>
-        </ion-card>
+        <!-- skeleton text card while loading -->
+        <app-skeleton-summary *ngIf="!isLoadedBeers"></app-skeleton-summary>
       </ion-col>
     </ion-row>
 
     <ion-row class="row">
       <ion-col size="6">
+        <!-- card to show beer -->
         <app-card-summary
           *ngIf="isLoadedBeers"
           [useTitle]="false"
           [beer]="beer2">
         </app-card-summary>
+
+        <!-- skeleton text card while loading -->
+        <app-skeleton-summary *ngIf="!isLoadedBeers" [useTitle]="false"></app-skeleton-summary>
       </ion-col>
 
       <ion-col size="6">
+        <!-- card to show beer -->
         <app-card-summary
           *ngIf="isLoadedBeers"
           [useTitle]="false"
           [beer]="beer3">
         </app-card-summary>
+
+        <!-- skeleton text card while loading -->
+        <app-skeleton-summary *ngIf="!isLoadedBeers" [useTitle]="false"></app-skeleton-summary>
       </ion-col>
     </ion-row>
   </ion-grid>
