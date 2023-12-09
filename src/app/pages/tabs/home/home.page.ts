@@ -31,7 +31,6 @@ import {BeerService} from "../../../services/beer.service";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {RefresherCustomEvent} from "@ionic/angular";
 import {concatMap} from "rxjs";
-import {Router} from "@angular/router";
 import {CardSummaryComponent} from "../../../components/card-summary/card-summary.component";
 import {SkeletonSummaryComponent} from "../../../components/skeleton-summary/skeleton-summary.component";
 
@@ -87,7 +86,6 @@ export class HomePage implements OnInit {
 
   constructor(
     private beerService: BeerService,
-    private router: Router
   ) {
   }
 
@@ -141,14 +139,9 @@ export class HomePage implements OnInit {
     this.fetchRandomBeers(event);
   }
 
-  onClickCard(beer: Beer) {
-    void this.router.navigate(['/detail'], {state: {beer: beer}});
-  }
-
-  onClickFavButton(event: MouseEvent) {
-    event.stopPropagation();
-  }
-
+  /**
+   * Handle click FAB
+   */
   onClickFab() {
     this.fetchRandomBeers();
   }

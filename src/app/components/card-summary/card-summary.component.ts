@@ -82,10 +82,18 @@ export class CardSummaryComponent {
   constructor(private router: Router) {
   }
 
+  /**
+   * Handle click card
+   * @param beer
+   */
   onClickCard(beer: Beer) {
     void this.router.navigate(['/detail'], {state: {beer: beer}});
   }
 
+  /**
+   * Handle click Fav button
+   * @param event
+   */
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
   }

@@ -9,6 +9,7 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonThumbnail,
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
@@ -23,7 +24,7 @@ import {Router} from "@angular/router";
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, NgForOf, IonAvatar, IonImg, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, NgForOf, IonAvatar, IonImg, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonThumbnail],
 })
 export class Tab2Page implements OnInit {
   beers?: Beer[];
@@ -34,6 +35,7 @@ export class Tab2Page implements OnInit {
   }
 
   ngOnInit() {
+    // get first page
     this.beerService.getPage(1).subscribe({
         next: fetchedBeers => {
           this.beers = fetchedBeers;
@@ -42,7 +44,12 @@ export class Tab2Page implements OnInit {
     );
   }
 
-  getPage(event: InfiniteScrollCustomEvent) {
+  /**
+   * Handle infinite scroll event
+   * @param event
+   */
+  handleScroll(event: InfiniteScrollCustomEvent) {
+    // get next page
     this.beerService.getPage(this.page++).subscribe({
         next: fetchedBeers => {
           this.beers?.push(...fetchedBeers);
@@ -52,9 +59,18 @@ export class Tab2Page implements OnInit {
     );
   }
 
+  /**
+   * Handle click item
+   * @param beer
+   */
   onClickItem(beer: Beer) {
     void this.router.navigate(['/detail'], {state: {beer: beer}});
   }
 
+  /**
+   * Tracking function to optimize loading
+   * @param index
+   * @param beer
+   */
   trackByBeerId: TrackByFunction<Beer> = (index: number, beer: Beer) => beer.id;
 }

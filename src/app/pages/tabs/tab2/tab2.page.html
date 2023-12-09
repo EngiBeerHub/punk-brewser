@@ -5,15 +5,19 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <!-- beer list -->
   <ion-list>
     <ion-item *ngFor="let beer of beers; trackBy: trackByBeerId" (click)="onClickItem(beer)">
-      <ion-avatar slot="start">
+      <ion-thumbnail slot="start">
         <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL"></ion-img>
-      </ion-avatar>
+      </ion-thumbnail>
+
       <ion-label>{{ beer.name }}</ion-label>
     </ion-item>
   </ion-list>
-  <ion-infinite-scroll (ionInfinite)="getPage($event)">
+
+  <!-- infinite scroll to load next beer list -->
+  <ion-infinite-scroll (ionInfinite)="handleScroll($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>
