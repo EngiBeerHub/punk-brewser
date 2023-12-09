@@ -16,7 +16,7 @@ import {Router} from "@angular/router";
 @Component({
   selector: 'app-card-summary',
   template: `
-      <ion-card button="true" (click)="beer ? onClickCard(beer) : null ;">
+      <ion-card button="true" (click)="beer ? onClickCard(beer) : null">
           <ion-card-header>
               <ion-card-title *ngIf="useTitle">{{ beer?.name }}</ion-card-title>
               <ion-card-subtitle *ngIf="!useTitle">{{ beer?.name }}</ion-card-subtitle>
