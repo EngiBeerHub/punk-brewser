@@ -33,11 +33,8 @@ export class StorageService {
    */
   add(beerId: number) {
     this.favIds.push(beerId);
-    this._storage?.set(this.KEY_FAV_IDS, JSON.stringify(this.favIds)).then(() => {
-      this._storage?.get(this.KEY_FAV_IDS).then(data => {
-        console.debug(JSON.stringify(data));
-      });
-    });
+    this._storage?.set(this.KEY_FAV_IDS, JSON.stringify(this.favIds));
+    console.debug(`updated favorites: ${this.favIds}`);
   }
 
   /**
@@ -49,12 +46,17 @@ export class StorageService {
     const isFound = removeIndex != -1;
     if (isFound) {
       this.favIds.splice(removeIndex, 1);
-      this._storage?.set(this.KEY_FAV_IDS, JSON.stringify(this.favIds)).then(() => {
-        this._storage?.get(this.KEY_FAV_IDS).then(data => {
-          console.debug(JSON.stringify(data));
-        });
-      });
+      this._storage?.set(this.KEY_FAV_IDS, JSON.stringify(this.favIds));
+      console.debug(`updated favorites: ${this.favIds}`);
     }
+  }
+
+  /**
+   * Find beer from favorites
+   * @param beerId
+   */
+  includes(beerId: number): boolean {
+    return this.favIds.indexOf(beerId) != -1;
   }
 
   set(key: string, value: any) {

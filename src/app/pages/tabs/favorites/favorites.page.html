@@ -5,16 +5,30 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <div *ngIf="isLoadedBeers && favBeers.length === 0 else list"
+       style="height: 100%; display: flex; justify-content: center; align-items: center">
+    <h1>No favorites yet.</h1>
+  </div>
   <!-- beer list -->
-  <ion-list *ngIf="isLoadedBeers else skeleton">
-    <ion-item *ngFor="let beer of favBeers; index as i; trackBy: trackByBeerId" (click)="onClickItem(beer)">
-      <ion-thumbnail slot="start">
-        <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL" style="object-fit: contain;"></ion-img>
-      </ion-thumbnail>
+  <ng-template #list>
+    <ion-list *ngIf="isLoadedBeers else skeleton">
+      <ion-item *ngFor="let beer of favBeers; index as i; trackBy: trackByBeerId" (click)="onClickItem(beer)">
+        <ion-thumbnail slot="start">
+          <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL" style="object-fit: contain;"></ion-img>
+        </ion-thumbnail>
 
-      <ion-label>{{ beer.name }}</ion-label>
-    </ion-item>
-  </ion-list>
+        <ion-label>{{ beer.name }}</ion-label>
+
+        <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event, beer.id)">
+          <!-- filled if favorite -->
+          <ion-icon *ngIf="isFavorite(beer.id) else notFavorite" name="star" color="warning" slot="end"></ion-icon>
+          <ng-template #notFavorite>
+            <ion-icon name="star-outline" color="medium" slot="end"></ion-icon>
+          </ng-template>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </ng-template>
 
   <!-- show skeleton while loading -->
   <ng-template #skeleton>

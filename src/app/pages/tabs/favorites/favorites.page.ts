@@ -2,8 +2,10 @@ import {Component, TrackByFunction} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {
+  IonButton,
   IonContent,
   IonHeader,
+  IonIcon,
   IonImg,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
@@ -11,6 +13,7 @@ import {
   IonLabel,
   IonList,
   IonSkeletonText,
+  IonText,
   IonThumbnail,
   IonTitle,
   IonToolbar
@@ -25,7 +28,7 @@ import {Router} from "@angular/router";
   templateUrl: './favorites.page.html',
   styleUrls: ['./favorites.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonContent, IonHeader, IonToolbar, IonTitle, IonImg, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonLabel, IonList, IonSkeletonText, IonThumbnail]
+  imports: [CommonModule, FormsModule, IonContent, IonHeader, IonToolbar, IonTitle, IonImg, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonLabel, IonList, IonSkeletonText, IonThumbnail, IonIcon, IonButton, IonText]
 })
 export class FavoritesPage {
   favIds: number[] = [];
@@ -52,6 +55,14 @@ export class FavoritesPage {
   }
 
   /**
+   * Check if stored as favorite
+   * @param beerId
+   */
+  isFavorite(beerId: number): boolean {
+    return this.storageService.includes(beerId);
+  }
+
+  /**
    * Tracking function to optimize loading
    * @param index
    * @param beer
@@ -64,5 +75,27 @@ export class FavoritesPage {
    */
   onClickItem(beer: Beer) {
     void this.router.navigate(['/detail'], {state: {beer: beer}});
+  }
+
+  /**
+   * Handle click Fav button
+   * @param event
+   * @param beerId
+   */
+  onClickFavButton(event: MouseEvent, beerId: number) {
+    event.stopPropagation();
+    this.toggleFavorite(beerId);
+  }
+
+  /**
+   * Toggle favorite status and update storage
+   * @private
+   */
+  private toggleFavorite(beerId: number) {
+    if (this.isFavorite(beerId)) {
+      this.storageService.remove(beerId);
+    } else {
+      this.storageService.add(beerId);
+    }
   }
 }

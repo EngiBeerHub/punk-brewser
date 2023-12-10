@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {
   IonButton,
   IonCard,
@@ -34,7 +34,7 @@ import {StorageService} from "../../services/storage.service";
               <div class="button-container">
                   <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event)">
                       <!-- filled if favorite -->
-                      <ion-icon *ngIf="isFavorite else notFavorite" name="star" color="warning"></ion-icon>
+                      <ion-icon *ngIf="isFavorite() else notFavorite" name="star" color="warning"></ion-icon>
                       <ng-template #notFavorite>
                           <ion-icon name="star-outline" color="medium"></ion-icon>
                       </ng-template>
@@ -78,11 +78,11 @@ import {StorageService} from "../../services/storage.service";
     NgIf,
   ]
 })
-export class CardSummaryComponent implements OnInit, AfterViewChecked {
+export class CardSummaryComponent implements OnInit {
   // use title or subtitle
   @Input() useTitle = false;
   @Input() beer!: Beer;
-  isFavorite = false;
+  // isFavorite = false;
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
   constructor(private router: Router, private storage: StorageService) {
@@ -93,30 +93,17 @@ export class CardSummaryComponent implements OnInit, AfterViewChecked {
     if (this.beer == null) {
       throw new Error('[beer] is required');
     }
-    this.setInitialStatus();
   }
 
-  ngAfterViewChecked() {
-    // necessary for updating when back button pressed
-    this.setInitialStatus();
-  }
-
-  /**
-   * Set initial status for this component
-   * @private
-   */
-  private setInitialStatus() {
-    const isFoundInFavorites = this.storage.favIds.indexOf(this.beer.id) != -1;
-    if (isFoundInFavorites) {
-      this.isFavorite = true;
-    }
+  isFavorite(): boolean {
+    return this.storage.includes(this.beer.id);
   }
 
   /**
    * Handle click card
    */
   onClickCard() {
-    void this.router.navigate(['/detail'], {state: {beer: this.beer, isFavorite: this.isFavorite}});
+    void this.router.navigate(['/detail'], {state: {beer: this.beer, isFavorite: this.isFavorite()}});
   }
 
   /**
@@ -133,11 +120,11 @@ export class CardSummaryComponent implements OnInit, AfterViewChecked {
    * @private
    */
   private toggleFavorite() {
-    if (this.isFavorite) {
-      this.isFavorite = false;
+    if (this.isFavorite()) {
+      // this.isFavorite = false;
       this.storage.remove(this.beer.id);
     } else {
-      this.isFavorite = true;
+      // this.isFavorite = true;
       this.storage.add(this.beer.id);
     }
   }

@@ -13,6 +13,14 @@
       </ion-thumbnail>
 
       <ion-label>{{ beer.name }}</ion-label>
+
+      <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event, beer.id)">
+        <!-- filled if favorite -->
+        <ion-icon *ngIf="isFavorite(beer.id) else notFavorite" name="star" color="warning" slot="end"></ion-icon>
+        <ng-template #notFavorite>
+          <ion-icon name="star-outline" color="medium" slot="end"></ion-icon>
+        </ng-template>
+      </ion-button>
     </ion-item>
   </ion-list>
 

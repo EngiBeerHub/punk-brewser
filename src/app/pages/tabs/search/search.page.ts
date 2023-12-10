@@ -1,8 +1,10 @@
 import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {
   IonAvatar,
+  IonButton,
   IonContent,
   IonHeader,
+  IonIcon,
   IonImg,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
@@ -19,13 +21,14 @@ import {Beer} from "../../../models/beer";
 import {NgForOf, NgIf} from "@angular/common";
 import {InfiniteScrollCustomEvent} from "@ionic/angular";
 import {Router} from "@angular/router";
+import {StorageService} from "../../../services/storage.service";
 
 @Component({
   selector: 'app-search',
   templateUrl: 'search.page.html',
   styles: [],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, NgForOf, IonAvatar, IonImg, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonThumbnail, NgIf, IonSkeletonText],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, NgForOf, IonAvatar, IonImg, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonThumbnail, NgIf, IonSkeletonText, IonIcon, IonButton],
 })
 export class SearchPage implements OnInit {
   beers?: Beer[];
@@ -38,7 +41,7 @@ export class SearchPage implements OnInit {
     index++;
   });
 
-  constructor(private beerService: BeerService, private router: Router) {
+  constructor(private beerService: BeerService, private storage: StorageService, private router: Router) {
   }
 
   ngOnInit() {
@@ -52,6 +55,14 @@ export class SearchPage implements OnInit {
         }
       }
     );
+  }
+
+  /**
+   * Check if stored as favorite
+   * @param beerId
+   */
+  isFavorite(beerId: number): boolean {
+    return this.storage.includes(beerId);
   }
 
   /**
@@ -73,17 +84,39 @@ export class SearchPage implements OnInit {
   }
 
   /**
-   * Handle click item
-   * @param beer
-   */
-  onClickItem(beer: Beer) {
-    void this.router.navigate(['/detail'], {state: {beer: beer}});
-  }
-
-  /**
    * Tracking function to optimize loading
    * @param index
    * @param beer
    */
   trackByBeerId: TrackByFunction<Beer> = (index: number, beer: Beer) => beer.id;
+
+  /**
+   * Handle click item
+   * @param beer
+   */
+  onClickItem(beer: Beer) {
+    void this.router.navigate(['/detail'], {state: {beer: beer, isFavorite: this.isFavorite(beer.id)}});
+  }
+
+  /**
+   * Handle click Fav button
+   * @param event
+   * @param beerId
+   */
+  onClickFavButton(event: MouseEvent, beerId: number) {
+    event.stopPropagation();
+    this.toggleFavorite(beerId);
+  }
+
+  /**
+   * Toggle favorite status and update storage
+   * @private
+   */
+  private toggleFavorite(beerId: number) {
+    if (this.isFavorite(beerId)) {
+      this.storage.remove(beerId);
+    } else {
+      this.storage.add(beerId);
+    }
+  }
 }
