@@ -19,9 +19,9 @@ export class StorageService {
    */
   async init() {
     // initialize storage
-    const storage = await this.storage.create();
-    await storage.defineDriver(CordovaSQLiteDriver);
-    this._storage = storage;
+    await this.storage.defineDriver(CordovaSQLiteDriver);
+    this._storage = await this.storage.create();
+    console.debug(`storage driver: ${this._storage.driver}`);
     // get stored data
     const storedIds = await this._storage.get(this.KEY_FAV_IDS);
     this.favIds = JSON.parse(storedIds) ?? [];
@@ -33,7 +33,11 @@ export class StorageService {
    */
   add(beerId: number) {
     this.favIds.push(beerId);
-    this._storage?.set(this.KEY_FAV_IDS, JSON.stringify(this.favIds));
+    this._storage?.set(this.KEY_FAV_IDS, JSON.stringify(this.favIds)).then(() => {
+      this._storage?.get(this.KEY_FAV_IDS).then(data => {
+        console.log(JSON.stringify(data));
+      });
+    });
   }
 
   /**
