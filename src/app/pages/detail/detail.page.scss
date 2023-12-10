@@ -1,0 +1,12 @@
+ion-img::part(image) {
+  max-height: 20vh;
+}
+
+.img-container {
+  height: 20vh;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
