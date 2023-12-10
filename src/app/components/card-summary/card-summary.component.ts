@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {
   IonButton,
   IonCard,
@@ -12,21 +12,22 @@ import {
 import {NgIf} from "@angular/common";
 import {Beer} from "../../models/beer";
 import {Router} from "@angular/router";
+import {StorageService} from "../../services/storage.service";
 
 @Component({
   selector: 'app-card-summary',
   template: `
-      <ion-card button="true" (click)="beer ? onClickCard(beer) : null">
+      <ion-card button="true" (click)="onClickCard(beer)">
           <ion-card-header>
-              <ion-card-title *ngIf="useTitle">{{ beer?.name }}</ion-card-title>
-              <ion-card-subtitle *ngIf="!useTitle">{{ beer?.name }}</ion-card-subtitle>
+              <ion-card-title *ngIf="useTitle">{{ beer.name }}</ion-card-title>
+              <ion-card-subtitle *ngIf="!useTitle">{{ beer.name }}</ion-card-subtitle>
           </ion-card-header>
 
           <ion-card-content>
               <!-- prevent height change from lazy loading image -->
               <div class="img-container">
                   <!-- lazy loading image -->
-                  <ion-img [src]="beer?.image_url ? beer!.image_url : ALT_IMAGE_URL"></ion-img>
+                  <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL"></ion-img>
               </div>
 
               <!-- favorite button -->
@@ -73,13 +74,19 @@ import {Router} from "@angular/router";
     NgIf,
   ]
 })
-export class CardSummaryComponent {
+export class CardSummaryComponent implements OnInit {
   // use title or subtitle
   @Input() useTitle = false;
-  @Input() beer?: Beer;
+  @Input() beer!: Beer;
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private storage: StorageService) {
+  }
+
+  ngOnInit(): void {
+    if (this.beer == null) {
+      throw new Error('[beer] is required');
+    }
   }
 
   /**
@@ -96,5 +103,6 @@ export class CardSummaryComponent {
    */
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
+    this.storage.add(this.beer!.id);
   }
 }

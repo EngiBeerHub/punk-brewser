@@ -3,6 +3,11 @@ import {TabsPage} from './tabs.page';
 
 export const routes: Routes = [
   {
+    path: '',
+    redirectTo: '/tabs/home',
+    pathMatch: 'full',
+  },
+  {
     path: 'tabs',
     component: TabsPage,
     children: [

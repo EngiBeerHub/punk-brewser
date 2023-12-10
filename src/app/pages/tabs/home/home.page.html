@@ -18,7 +18,7 @@
         <app-card-summary
           *ngIf="isLoadedBeers else skeleton1"
           [useTitle]="true"
-          [beer]="beer1">
+          [beer]="beer1!">
         </app-card-summary>
 
         <!-- skeleton text card while loading -->
@@ -34,7 +34,7 @@
         <app-card-summary
           *ngIf="isLoadedBeers else skeleton2"
           [useTitle]="false"
-          [beer]="beer2">
+          [beer]="beer2!">
         </app-card-summary>
 
         <!-- skeleton text card while loading -->
@@ -48,7 +48,7 @@
         <app-card-summary
           *ngIf="isLoadedBeers else skeleton3"
           [useTitle]="false"
-          [beer]="beer3">
+          [beer]="beer3!">
         </app-card-summary>
 
         <!-- skeleton text card while loading -->
