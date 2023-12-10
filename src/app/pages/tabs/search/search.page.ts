@@ -2,6 +2,7 @@ import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {
   IonAvatar,
   IonButton,
+  IonChip,
   IonContent,
   IonHeader,
   IonIcon,
@@ -11,6 +12,7 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonSearchbar,
   IonSkeletonText,
   IonThumbnail,
   IonTitle,
@@ -28,7 +30,7 @@ import {StorageService} from "../../../services/storage.service";
   templateUrl: 'search.page.html',
   styles: [],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, NgForOf, IonAvatar, IonImg, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonThumbnail, NgIf, IonSkeletonText, IonIcon, IonButton],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, NgForOf, IonAvatar, IonImg, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonThumbnail, NgIf, IonSkeletonText, IonIcon, IonButton, IonSearchbar, IonChip],
 })
 export class SearchPage implements OnInit {
   beers?: Beer[];
