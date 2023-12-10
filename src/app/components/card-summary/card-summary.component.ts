@@ -17,7 +17,7 @@ import {StorageService} from "../../services/storage.service";
 @Component({
   selector: 'app-card-summary',
   template: `
-      <ion-card button="true" (click)="onClickCard(beer)">
+      <ion-card button="true" (click)="onClickCard()">
           <ion-card-header>
               <ion-card-title *ngIf="useTitle">{{ beer.name }}</ion-card-title>
               <ion-card-subtitle *ngIf="!useTitle">{{ beer.name }}</ion-card-subtitle>
@@ -109,10 +109,9 @@ export class CardSummaryComponent implements OnInit {
 
   /**
    * Handle click card
-   * @param beer
    */
-  onClickCard(beer: Beer) {
-    void this.router.navigate(['/detail'], {state: {beer: beer}});
+  onClickCard() {
+    void this.router.navigate(['/detail'], {state: {beer: this.beer}});
   }
 
   /**

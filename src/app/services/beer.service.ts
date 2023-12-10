@@ -85,6 +85,15 @@ export class BeerService {
   }
 
   /**
+   * GET beers by specified IDs
+   * @param ids
+   */
+  getBeersByIds(ids: number[]): Observable<Beer[]> {
+    const url = `${this.beersUrl}?ids=${ids.join('|')}`;
+    return this.httpClient.get<Beer[]>(url);
+  }
+
+  /**
    * Handle error both from client and backend.
    * @param error
    * @returns an error Observable
