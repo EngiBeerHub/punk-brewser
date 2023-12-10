@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Search</ion-title>
   </ion-toolbar>
-  <ion-searchbar></ion-searchbar>
+  <ion-searchbar (ionInput)="handleInput($event)" animated="true" debounce="1000"></ion-searchbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">

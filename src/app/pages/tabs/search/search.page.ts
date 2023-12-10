@@ -21,7 +21,7 @@ import {
 import {BeerService} from "../../../services/beer.service";
 import {Beer} from "../../../models/beer";
 import {NgForOf, NgIf} from "@angular/common";
-import {InfiniteScrollCustomEvent} from "@ionic/angular";
+import {InfiniteScrollCustomEvent, SearchbarCustomEvent} from "@ionic/angular";
 import {Router} from "@angular/router";
 import {StorageService} from "../../../services/storage.service";
 
@@ -120,5 +120,9 @@ export class SearchPage implements OnInit {
     } else {
       this.storage.add(beerId);
     }
+  }
+
+  handleInput(event: SearchbarCustomEvent) {
+    console.log(`input: ${event.target.value}`);
   }
 }
