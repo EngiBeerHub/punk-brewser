@@ -35,7 +35,7 @@ export class StorageService {
     this.favIds.push(beerId);
     this._storage?.set(this.KEY_FAV_IDS, JSON.stringify(this.favIds)).then(() => {
       this._storage?.get(this.KEY_FAV_IDS).then(data => {
-        console.log(JSON.stringify(data));
+        console.debug(JSON.stringify(data));
       });
     });
   }
@@ -49,7 +49,11 @@ export class StorageService {
     const isFound = removeIndex != -1;
     if (isFound) {
       this.favIds.splice(removeIndex, 1);
-      this._storage?.set(this.KEY_FAV_IDS, JSON.stringify(this.favIds));
+      this._storage?.set(this.KEY_FAV_IDS, JSON.stringify(this.favIds)).then(() => {
+        this._storage?.get(this.KEY_FAV_IDS).then(data => {
+          console.debug(JSON.stringify(data));
+        });
+      });
     }
   }
 
@@ -60,10 +64,6 @@ export class StorageService {
   get(key: string) {
     return this._storage?.get(key);
   }
-
-  // remove(key: string) {
-  //   return this._storage?.remove(key);
-  // }
 
   clear() {
     this._storage?.clear();

@@ -33,7 +33,11 @@ import {StorageService} from "../../services/storage.service";
               <!-- favorite button -->
               <div class="button-container">
                   <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event)">
-                      <ion-icon name="star-outline" color="medium"></ion-icon>
+                      <!-- filled if favorite -->
+                      <ion-icon *ngIf="isFavorite else notFavorite" name="star" color="warning"></ion-icon>
+                      <ng-template #notFavorite>
+                          <ion-icon name="star-outline" color="medium"></ion-icon>
+                      </ng-template>
                   </ion-button>
               </div>
           </ion-card-content>
@@ -78,14 +82,28 @@ export class CardSummaryComponent implements OnInit {
   // use title or subtitle
   @Input() useTitle = false;
   @Input() beer!: Beer;
+  isFavorite = false;
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
   constructor(private router: Router, private storage: StorageService) {
   }
 
   ngOnInit(): void {
+    // non-null assertion for required input property
     if (this.beer == null) {
       throw new Error('[beer] is required');
+    }
+    this.setInitialStatus();
+  }
+
+  /**
+   * Set initial status for this component
+   * @private
+   */
+  private setInitialStatus() {
+    const isFoundInFavorites = this.storage.favIds.indexOf(this.beer.id) != -1;
+    if (isFoundInFavorites) {
+      this.isFavorite = true;
     }
   }
 
@@ -103,6 +121,20 @@ export class CardSummaryComponent implements OnInit {
    */
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
-    this.storage.add(this.beer!.id);
+    this.toggleFavorite();
+  }
+
+  /**
+   * Toggle favorite status and update storage
+   * @private
+   */
+  private toggleFavorite() {
+    if (this.isFavorite) {
+      this.isFavorite = false;
+      this.storage.remove(this.beer.id);
+    } else {
+      this.isFavorite = true;
+      this.storage.add(this.beer.id);
+    }
   }
 }
