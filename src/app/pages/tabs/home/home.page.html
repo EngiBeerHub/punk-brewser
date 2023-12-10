@@ -1,0 +1,68 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Today's Beers</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- pull to refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- grid to show cards -->
+  <ion-grid class="ion-padding">
+    <ion-row class="row">
+      <ion-col>
+        <!-- card to show beer -->
+        <app-card-summary
+          *ngIf="isLoadedBeers else skeleton1"
+          [useTitle]="true"
+          [beer]="beer1!">
+        </app-card-summary>
+
+        <!-- skeleton text card while loading -->
+        <ng-template #skeleton1>
+          <app-skeleton-summary></app-skeleton-summary>
+        </ng-template>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="row">
+      <ion-col size="6">
+        <!-- card to show beer -->
+        <app-card-summary
+          *ngIf="isLoadedBeers else skeleton2"
+          [useTitle]="false"
+          [beer]="beer2!">
+        </app-card-summary>
+
+        <!-- skeleton text card while loading -->
+        <ng-template #skeleton2>
+          <app-skeleton-summary *ngIf="!isLoadedBeers" [useTitle]="false"></app-skeleton-summary>
+        </ng-template>
+      </ion-col>
+
+      <ion-col size="6">
+        <!-- card to show beer -->
+        <app-card-summary
+          *ngIf="isLoadedBeers else skeleton3"
+          [useTitle]="false"
+          [beer]="beer3!">
+        </app-card-summary>
+
+        <!-- skeleton text card while loading -->
+        <ng-template #skeleton3>
+          <app-skeleton-summary *ngIf="!isLoadedBeers" [useTitle]="false"></app-skeleton-summary>
+        </ng-template>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- FAB -->
+  <ion-fab slot="fixed" vertical="top" horizontal="end">
+    <ion-fab-button (click)="isLoadedBeers ? onClickFab() : null">
+      <ion-icon name="reload-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
