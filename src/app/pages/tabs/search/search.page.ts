@@ -21,13 +21,13 @@ import {InfiniteScrollCustomEvent} from "@ionic/angular";
 import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
+  selector: 'app-search',
+  templateUrl: 'search.page.html',
   styles: [],
   standalone: true,
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, NgForOf, IonAvatar, IonImg, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonThumbnail, NgIf, IonSkeletonText],
 })
-export class Tab2Page implements OnInit {
+export class SearchPage implements OnInit {
   beers?: Beer[];
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
   page = 1;
