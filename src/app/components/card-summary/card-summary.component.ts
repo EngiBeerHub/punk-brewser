@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, Input, OnInit} from '@angular/core';
 import {
   IonButton,
   IonCard,
@@ -78,7 +78,7 @@ import {StorageService} from "../../services/storage.service";
     NgIf,
   ]
 })
-export class CardSummaryComponent implements OnInit {
+export class CardSummaryComponent implements OnInit, AfterViewChecked {
   // use title or subtitle
   @Input() useTitle = false;
   @Input() beer!: Beer;
@@ -93,6 +93,11 @@ export class CardSummaryComponent implements OnInit {
     if (this.beer == null) {
       throw new Error('[beer] is required');
     }
+    this.setInitialStatus();
+  }
+
+  ngAfterViewChecked() {
+    // necessary for updating when back button pressed
     this.setInitialStatus();
   }
 
@@ -111,7 +116,7 @@ export class CardSummaryComponent implements OnInit {
    * Handle click card
    */
   onClickCard() {
-    void this.router.navigate(['/detail'], {state: {beer: this.beer}});
+    void this.router.navigate(['/detail'], {state: {beer: this.beer, isFavorite: this.isFavorite}});
   }
 
   /**
