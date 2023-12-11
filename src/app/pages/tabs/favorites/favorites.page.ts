@@ -74,7 +74,7 @@ export class FavoritesPage {
    * @param beer
    */
   onClickItem(beer: Beer) {
-    void this.router.navigate(['/detail'], {state: {beer: beer}});
+    void this.router.navigate(['/detail'], {state: {beer: beer, isFavorite: this.isFavorite(beer.id)}});
   }
 
   /**
