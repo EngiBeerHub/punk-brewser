@@ -2,8 +2,14 @@ import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {
   IonAvatar,
   IonButton,
+  IonButtons,
   IonChip,
   IonContent,
+  IonDatetime,
+  IonDatetimeButton,
+  IonFab,
+  IonFabButton,
+  IonFooter,
   IonHeader,
   IonIcon,
   IonImg,
@@ -12,8 +18,13 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonModal,
+  IonRange,
   IonSearchbar,
+  IonSegment,
+  IonSegmentButton,
   IonSkeletonText,
+  IonText,
   IonThumbnail,
   IonTitle,
   IonToolbar,
@@ -28,9 +39,9 @@ import {StorageService} from "../../../services/storage.service";
 @Component({
   selector: 'app-search',
   templateUrl: 'search.page.html',
-  styles: [],
+  styleUrls: ['search.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, NgForOf, IonAvatar, IonImg, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonThumbnail, NgIf, IonSkeletonText, IonIcon, IonButton, IonSearchbar, IonChip],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, NgForOf, IonAvatar, IonImg, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonThumbnail, NgIf, IonSkeletonText, IonIcon, IonButton, IonSearchbar, IonChip, IonSegment, IonSegmentButton, IonFab, IonFabButton, IonModal, IonButtons, IonFooter, IonRange, IonDatetimeButton, IonDatetime, IonText],
 })
 export class SearchPage implements OnInit {
   beers?: Beer[];
