@@ -45,7 +45,7 @@
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
-  <!-- FAB -->
+  <!-- FAB to open filtering sheet modal -->
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
     <ion-fab-button id="open-modal">
       <ion-icon name="options-sharp"></ion-icon>
@@ -68,49 +68,47 @@
       </ion-header>
       <ion-content>
         <ion-searchbar show-cancel-button="focus"></ion-searchbar>
-        <div>
-          <ion-list>
-            <ion-item>
-              <ion-range labelPlacement="fixed" label="ABV:" dualKnobs="true"
-                         [value]="{lower: 0, upper: 60}" max="60"
-                         pin="true"></ion-range>
-            </ion-item>
-            <ion-item>
-              <ion-range labelPlacement="fixed" label="IBU:" dualKnobs="true"
-                         [value]="{lower: 0, upper: 250}" max="250"
-                         pin="true"></ion-range>
-            </ion-item>
-            <ion-item>
-              <ion-range labelPlacement="fixed" label="EBC:" dualKnobs="true"
-                         [value]="{lower: 0, upper: 600}" max="600"
-                         pin="true"></ion-range>
-            </ion-item>
-            <ion-item style="--inner-padding-top: 20px">
-              <ion-label>Brewed After:</ion-label>
-              <ion-datetime-button datetime="brewed-after">date</ion-datetime-button>
-              <ion-modal [keepContentsMounted]="true">
-                <ng-template>
-                  <ion-datetime id="brewed-after" presentation="date" preferWheel="true" locale="en-us"
-                                showDefaultButtons="true"></ion-datetime>
-                </ng-template>
-              </ion-modal>
-            </ion-item>
-            <ion-item style="--inner-padding-top: 20px">
-              <ion-label>Brewed Before:</ion-label>
-              <ion-datetime-button datetime="brewed-before">date</ion-datetime-button>
-              <ion-modal [keepContentsMounted]="true">
-                <ng-template>
-                  <ion-datetime id="brewed-before" presentation="date" preferWheel="true" locale="en-us"
-                                showDefaultButtons="true"></ion-datetime>
-                </ng-template>
-              </ion-modal>
-            </ion-item>
-          </ion-list>
-          <ion-button class="ion-margin-horizontal" expand="block" shape="round"
-                      style="margin-top: 36px"
-                      (click)="modal.dismiss()">Apply
-          </ion-button>
-        </div>
+        <ion-list>
+          <ion-item>
+            <ion-range labelPlacement="fixed" label="ABV:" dualKnobs="true"
+                       [value]="{lower: 0, upper: 60}" max="60"
+                       pin="true"></ion-range>
+          </ion-item>
+          <ion-item>
+            <ion-range labelPlacement="fixed" label="IBU:" dualKnobs="true"
+                       [value]="{lower: 0, upper: 250}" max="250"
+                       pin="true"></ion-range>
+          </ion-item>
+          <ion-item>
+            <ion-range labelPlacement="fixed" label="EBC:" dualKnobs="true"
+                       [value]="{lower: 0, upper: 600}" max="600"
+                       pin="true"></ion-range>
+          </ion-item>
+          <ion-item style="--inner-padding-top: 20px">
+            <ion-label>Brewed After:</ion-label>
+            <ion-datetime-button datetime="brewed-after">date</ion-datetime-button>
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime id="brewed-after" presentation="date" preferWheel="true" locale="en-us"
+                              showDefaultButtons="true"></ion-datetime>
+              </ng-template>
+            </ion-modal>
+          </ion-item>
+          <ion-item style="--inner-padding-top: 20px">
+            <ion-label>Brewed Before:</ion-label>
+            <ion-datetime-button datetime="brewed-before">date</ion-datetime-button>
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime id="brewed-before" presentation="date" preferWheel="true" locale="en-us"
+                              showDefaultButtons="true"></ion-datetime>
+              </ng-template>
+            </ion-modal>
+          </ion-item>
+        </ion-list>
+        <ion-button class="ion-margin-horizontal" expand="block" shape="round"
+                    style="margin-top: 36px"
+                    (click)="modal.dismiss()">Apply
+        </ion-button>
       </ion-content>
     </ng-template>
   </ion-modal>
