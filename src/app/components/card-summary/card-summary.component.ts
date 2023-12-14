@@ -7,7 +7,8 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonIcon,
-  IonImg
+  IonImg,
+  ToastController
 } from "@ionic/angular/standalone";
 import {NgIf} from "@angular/common";
 import {Beer} from "../../models/beer";
@@ -17,7 +18,7 @@ import {StorageService} from "../../services/storage.service";
 @Component({
   selector: 'app-card-summary',
   template: `
-      <ion-card button="true" (click)="onClickCard(beer)">
+      <ion-card button="true" (click)="onClickCard()">
           <ion-card-header>
               <ion-card-title *ngIf="useTitle">{{ beer.name }}</ion-card-title>
               <ion-card-subtitle *ngIf="!useTitle">{{ beer.name }}</ion-card-subtitle>
@@ -34,7 +35,7 @@ import {StorageService} from "../../services/storage.service";
               <div class="button-container">
                   <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event)">
                       <!-- filled if favorite -->
-                      <ion-icon *ngIf="isFavorite else notFavorite" name="star" color="warning"></ion-icon>
+                      <ion-icon *ngIf="isFavorite() else notFavorite" name="star" color="warning"></ion-icon>
                       <ng-template #notFavorite>
                           <ion-icon name="star-outline" color="medium"></ion-icon>
                       </ng-template>
@@ -82,10 +83,10 @@ export class CardSummaryComponent implements OnInit {
   // use title or subtitle
   @Input() useTitle = false;
   @Input() beer!: Beer;
-  isFavorite = false;
+  // isFavorite = false;
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private router: Router, private storage: StorageService) {
+  constructor(private router: Router, private storage: StorageService, private toastController: ToastController) {
   }
 
   ngOnInit(): void {
@@ -93,26 +94,17 @@ export class CardSummaryComponent implements OnInit {
     if (this.beer == null) {
       throw new Error('[beer] is required');
     }
-    this.setInitialStatus();
   }
 
-  /**
-   * Set initial status for this component
-   * @private
-   */
-  private setInitialStatus() {
-    const isFoundInFavorites = this.storage.favIds.indexOf(this.beer.id) != -1;
-    if (isFoundInFavorites) {
-      this.isFavorite = true;
-    }
+  isFavorite(): boolean {
+    return this.storage.includes(this.beer.id);
   }
 
   /**
    * Handle click card
-   * @param beer
    */
-  onClickCard(beer: Beer) {
-    void this.router.navigate(['/detail'], {state: {beer: beer}});
+  onClickCard() {
+    void this.router.navigate(['/detail'], {state: {beer: this.beer, isFavorite: this.isFavorite()}});
   }
 
   /**
@@ -121,6 +113,7 @@ export class CardSummaryComponent implements OnInit {
    */
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
+    void this.showToast();
     this.toggleFavorite();
   }
 
@@ -129,12 +122,26 @@ export class CardSummaryComponent implements OnInit {
    * @private
    */
   private toggleFavorite() {
-    if (this.isFavorite) {
-      this.isFavorite = false;
+    if (this.isFavorite()) {
+      // this.isFavorite = false;
       this.storage.remove(this.beer.id);
     } else {
-      this.isFavorite = true;
+      // this.isFavorite = true;
       this.storage.add(this.beer.id);
     }
+  }
+
+  /**
+   * Show toast for adding/removing favorites
+   * @private
+   */
+  private async showToast() {
+    const toast = await this.toastController.create({
+      position: 'top',
+      icon: 'checkmark-circle-outline',
+      message: this.isFavorite() ? `Removed ${this.beer.name} from favorites.` : `Added ${this.beer.name} to favorites.`,
+      duration: 2000
+    });
+    await toast.present();
   }
 }
