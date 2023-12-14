@@ -46,11 +46,14 @@ import {StorageService} from "../../../services/storage.service";
 export class SearchPage implements OnInit {
   beers?: Beer[];
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
-  page = 1;
+  readonly defaultPage = 1;
+  pageIndex = 1;
   // to show skeleton
-  isLoaded1stPage = false;
+  isLoadedBeers = false;
+  // search mode to prevent scroll event
+  isSearched = false;
   // number of skeleton item while loading
-  skeletonArray = Array.from({length: 15}, (_, index) => {
+  readonly skeletonArray = Array.from({length: 15}, (_, index) => {
     index++;
   });
 
@@ -59,15 +62,34 @@ export class SearchPage implements OnInit {
 
   ngOnInit() {
     // get first page
-    this.beerService.getPage(1).subscribe({
+    this.fetchFirstPage();
+  }
+
+  /**
+   * Fetch first page of all beers
+   * @private
+   */
+  private fetchFirstPage() {
+    this.resetPageIndex();
+    this.isSearched = false;
+    this.isLoadedBeers = false;
+    this.beerService.getPage(this.defaultPage).subscribe({
         next: fetchedBeers => {
           this.beers = fetchedBeers;
         },
         complete: () => {
-          this.isLoaded1stPage = true;
+          this.isLoadedBeers = true;
         }
       }
     );
+  }
+
+  /**
+   * Reset page index
+   * @private
+   */
+  private resetPageIndex() {
+    this.pageIndex = 1;
   }
 
   /**
@@ -79,12 +101,12 @@ export class SearchPage implements OnInit {
   }
 
   /**
-   * Handle infinite scroll event
+   * Handle infinite scroll event when not search mode
    * @param event
    */
   handleScroll(event: InfiniteScrollCustomEvent) {
     // get next page
-    this.beerService.getPage(this.page++).subscribe({
+    this.beerService.getPage(this.pageIndex++).subscribe({
         next: fetchedBeers => {
           this.beers?.push(...fetchedBeers);
           void event.target.complete();
@@ -133,8 +155,36 @@ export class SearchPage implements OnInit {
     }
   }
 
-  handleInput(event: SearchbarCustomEvent) {
-    console.log(`input: ${event.target.value}`);
+  /**
+   * Handle value change of searchbar
+   * @param event
+   */
+  handleSearch(event: SearchbarCustomEvent) {
+    console.log(`search value: ${event.target.value}`);
+
+    if (event.target.value) { // if some name searched
+      this.isLoadedBeers = false;
+      this.beerService.getBeersByName(event.target.value).subscribe({
+        next: fetchedBeers => {
+          this.beers = fetchedBeers;
+        },
+        complete: () => {
+          this.isSearched = true;
+          this.isLoadedBeers = true;
+        }
+      });
+    } else if (event.target.value === '') { // if entered with blank, fetch all beers again
+      // Fetch first page again
+      this.fetchFirstPage();
+    }
+  }
+
+  /**
+   * Handle clear button of searchbar
+   */
+  handleClearSearch() {
+    // Fetch first page again
+    this.fetchFirstPage();
   }
 
   /**

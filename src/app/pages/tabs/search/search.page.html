@@ -1,13 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-searchbar class="ion-margin-top" animated="true" show-cancel-button="focus"
-                   debounce="1000" (ionInput)="handleInput($event)"></ion-searchbar>
+    <ion-searchbar class="ion-margin-top" animated="true" placeholder="Enter beer name"
+                   (ionChange)="handleSearch($event)" (ionClear)="handleClearSearch()"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <!-- beer list -->
-  <ion-list *ngIf="isLoaded1stPage else skeleton">
+  <ion-list *ngIf="isLoadedBeers else skeleton">
     <ion-item *ngFor="let beer of beers; index as i; trackBy: trackByBeerId" (click)="onClickItem(beer)">
       <ion-thumbnail slot="start">
         <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL" style="object-fit: contain;"></ion-img>
@@ -41,7 +41,7 @@
   </ng-template>
 
   <!-- infinite scroll to load next beer list -->
-  <ion-infinite-scroll *ngIf="isLoaded1stPage" (ionInfinite)="handleScroll($event)">
+  <ion-infinite-scroll *ngIf="isLoadedBeers" [disabled]="isSearched" (ionInfinite)="handleScroll($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
