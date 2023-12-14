@@ -137,7 +137,8 @@ export class CardSummaryComponent implements OnInit {
    */
   private async showToast() {
     const toast = await this.toastController.create({
-      position: 'middle',
+      position: 'top',
+      icon: 'checkmark-circle-outline',
       message: this.isFavorite() ? `Removed ${this.beer.name} from favorites.` : `Added ${this.beer.name} to favorites.`,
       duration: 2000
     });
