@@ -35,6 +35,7 @@ import {NgForOf, NgIf} from "@angular/common";
 import {InfiniteScrollCustomEvent, SearchbarCustomEvent} from "@ionic/angular";
 import {Router} from "@angular/router";
 import {StorageService} from "../../../services/storage.service";
+import {Keyboard} from "@capacitor/keyboard";
 
 @Component({
   selector: 'app-search',
@@ -161,6 +162,7 @@ export class SearchPage implements OnInit {
    */
   handleSearch(event: SearchbarCustomEvent) {
     console.log(`search value: ${event.target.value}`);
+    void Keyboard.hide();
 
     if (event.target.value) { // if some name searched
       this.isLoadedBeers = false;
@@ -185,6 +187,9 @@ export class SearchPage implements OnInit {
   handleClearSearch() {
     // Fetch first page again
     this.fetchFirstPage();
+  }
+
+  handleCancelSearch() {
   }
 
   /**
