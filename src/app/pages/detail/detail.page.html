@@ -10,8 +10,8 @@
 <ion-content [fullscreen]="true">
   <ion-card>
     <ion-card-header>
-      <ion-card-title>{{ beer?.name }}</ion-card-title>
-      <ion-card-subtitle>{{ beer?.tagline }}({{ beer?.abv }}%)</ion-card-subtitle>
+      <ion-card-title>{{ beer.name }}</ion-card-title>
+      <ion-card-subtitle>{{ beer.tagline }}({{ beer.abv }}%)</ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content>
@@ -23,39 +23,42 @@
 
       <!-- favorite button -->
       <div class="button-container">
-        <ion-button class="ion-no-margin" fill="clear" (click)="onClickButton($event)">
-          <ion-icon name="star-outline" color="medium"></ion-icon>
+        <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event)">
+          <ion-icon *ngIf="isFavorite else notFavorite" name="star" color="warning"></ion-icon>
+          <ng-template #notFavorite>
+            <ion-icon name="star-outline" color="medium"></ion-icon>
+          </ng-template>
         </ion-button>
       </div>
 
       <!--   description   -->
-      <ion-text>{{ beer?.description }}</ion-text>
+      <ion-text>{{ beer.description }}</ion-text>
 
       <!--   detailed data   -->
       <ion-list>
         <ion-item>
-          <ion-label class="ion-text-wrap">[First Brewed] - {{ beer?.first_brewed }}</ion-label>
+          <ion-label class="ion-text-wrap">[First Brewed] - {{ beer.first_brewed }}</ion-label>
         </ion-item>
         <ion-item>
-          <ion-label class="ion-text-wrap">[Ph] - {{ beer?.ph }}</ion-label>
+          <ion-label class="ion-text-wrap">[Ph] - {{ beer.ph }}</ion-label>
         </ion-item>
         <ion-item>
-          <ion-label class="ion-text-wrap">[Contributed By]<br>{{ beer?.contributed_by }}</ion-label>
+          <ion-label class="ion-text-wrap">[Contributed By]<br>{{ beer.contributed_by }}</ion-label>
         </ion-item>
         <ion-item>
-          <ion-label class="ion-text-wrap">[Brewers Tips]<br>{{ beer?.brewers_tips }}</ion-label>
+          <ion-label class="ion-text-wrap">[Brewers Tips]<br>{{ beer.brewers_tips }}</ion-label>
         </ion-item>
         <ion-item>
-          <ion-label class="ion-text-wrap">[Food Pairings]<br>{{ beer?.food_pairing }}</ion-label>
+          <ion-label class="ion-text-wrap">[Food Pairings]<br>{{ beer.food_pairing }}</ion-label>
         </ion-item>
         <ion-item>
-          <ion-label class="ion-text-wrap">[Yeast]<br>{{ beer!.ingredients.yeast }}</ion-label>
+          <ion-label class="ion-text-wrap">[Yeast]<br>{{ beer.ingredients.yeast }}</ion-label>
         </ion-item>
         <ion-item lines="none">
           <ion-label class="ion-text-wrap">
             [Malt]<br>
             <ion-list>
-              <ion-item *ngFor="let malt of beer!.ingredients.malt">
+              <ion-item *ngFor="let malt of beer.ingredients.malt">
                 <ion-label class="ion-text-wrap">{{ malt.name }}
                   ({{ malt.amount.value }}{{ malt.amount.unit }})
                 </ion-label>
@@ -67,7 +70,7 @@
           <ion-label class="ion-text-wrap">
             [Hop]<br>
             <ion-list>
-              <ion-item *ngFor="let hop of beer!.ingredients.hops">
+              <ion-item *ngFor="let hop of beer.ingredients.hops">
                 <ion-label class="ion-text-wrap">{{ hop.name }} ({{ hop.attribute }}
                   , {{ hop.amount.value }}{{ hop.amount.unit }})
                 </ion-label>
@@ -78,6 +81,4 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
-
-  <ion-skeleton-text animated="true" style="width: 0; height: 0"></ion-skeleton-text>
 </ion-content>

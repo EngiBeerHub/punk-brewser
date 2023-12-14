@@ -92,7 +92,7 @@ export class HomePage implements OnInit {
   ngOnInit(): void {
     this.fetchRandomBeers();
   }
-
+  
   /**
    * Fetch random beers from API
    * @param event
