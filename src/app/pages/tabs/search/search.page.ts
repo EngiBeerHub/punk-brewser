@@ -136,4 +136,13 @@ export class SearchPage implements OnInit {
   handleInput(event: SearchbarCustomEvent) {
     console.log(`input: ${event.target.value}`);
   }
+
+  /**
+   * Necessary to disable dismiss by swipe
+   * @param data
+   * @param role
+   */
+  async disableDismiss(data?: any, role?: string) {
+    return role !== 'gesture';
+  }
 }

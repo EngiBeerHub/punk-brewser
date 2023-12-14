@@ -9,4 +9,11 @@
 
 ion-datetime-button::part(native) {
   //background: white;
+  margin-right: 16px;
+}
+
+ion-button {
+  //margin-top: 36px;
+  //position: absolute;
+  //bottom: calc(10% + 16px);
 }
