@@ -7,7 +7,8 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonIcon,
-  IonImg
+  IonImg,
+  ToastController
 } from "@ionic/angular/standalone";
 import {NgIf} from "@angular/common";
 import {Beer} from "../../models/beer";
@@ -85,7 +86,7 @@ export class CardSummaryComponent implements OnInit {
   // isFavorite = false;
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private router: Router, private storage: StorageService) {
+  constructor(private router: Router, private storage: StorageService, private toastController: ToastController) {
   }
 
   ngOnInit(): void {
@@ -112,6 +113,7 @@ export class CardSummaryComponent implements OnInit {
    */
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
+    void this.showToast();
     this.toggleFavorite();
   }
 
@@ -127,5 +129,18 @@ export class CardSummaryComponent implements OnInit {
       // this.isFavorite = true;
       this.storage.add(this.beer.id);
     }
+  }
+
+  /**
+   * Show toast for adding/removing favorites
+   * @private
+   */
+  private async showToast() {
+    const toast = await this.toastController.create({
+      position: 'middle',
+      message: this.isFavorite() ? `Removed ${this.beer.name} from favorites.` : `Added ${this.beer.name} to favorites.`,
+      duration: 2000
+    });
+    await toast.present();
   }
 }
