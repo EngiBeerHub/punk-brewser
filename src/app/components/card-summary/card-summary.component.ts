@@ -140,7 +140,7 @@ export class CardSummaryComponent implements OnInit {
       position: 'top',
       icon: 'checkmark-circle-outline',
       message: this.isFavorite() ? `Removed ${this.beer.name} from favorites.` : `Added ${this.beer.name} to favorites.`,
-      duration: 2000
+      duration: 1500
     });
     await toast.present();
   }
