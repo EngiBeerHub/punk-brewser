@@ -30,7 +30,7 @@ export class BeerService {
    * GET a random beer from API
    * @returns a random beer
    */
-  getRandomBeer(): Observable<Beer> {
+  fetchRandomBeer(): Observable<Beer> {
     const randomBeerUrl = `${this.beersUrl}/random`;
     return this.httpClient.get<Beer[]>(randomBeerUrl).pipe(
       timeout(5000),
@@ -52,11 +52,11 @@ export class BeerService {
    * get multiple times until the end.
    * @returns all beers
    */
-  getAllBeers(): Observable<Beer[]> {
+  fetchAllBeers(): Observable<Beer[]> {
     let page = 1;
-    return this.getPage(page).pipe(
+    return this.fetchBeerPageByConditions(undefined, page).pipe(
       expand((pageData) =>
-        pageData.length > 0 ? this.getPage(++page) : EMPTY,
+        pageData.length > 0 ? this.fetchBeerPageByConditions(undefined, ++page) : EMPTY,
       ),
       tap((pageData) =>
         console.log(`got page data. page: ${page}, length: ${pageData.length}`),
@@ -67,36 +67,53 @@ export class BeerService {
   }
 
   /**
-   * GET a paginated data from API
-   * @param page page index starts from 1
-   * @param perPage beers per page
-   * @returns beer list
-   */
-  getPage(page: number, perPage = 30): Observable<Beer[]> {
-    const params = new HttpParams().set('page', page).set('per_page', perPage);
-    return this.httpClient.get<Beer[]>(this.beersUrl, {params: params});
-  }
-
-  /**
    * GET beers by specified IDs
    * @param ids
    */
-  getBeersByIds(ids: number[]): Observable<Beer[]> {
+  fetchBeersByIds(ids: number[]): Observable<Beer[]> {
     const params = new HttpParams().set('ids', ids.join('|'));
+    console.debug(`search beers with: ${JSON.stringify(params)}`);
     return this.httpClient.get<Beer[]>(this.beersUrl, {params: params});
   }
 
   /**
-   * GET beers by specified name
-   * @param name
+   * GET beers with specified conditions
+   * @param searchCondition
+   * @param page
+   * @param perPage
    */
-  getBeersByName(name: string): Observable<Beer[]> {
-    const params = new HttpParams().set('beer_name', name);
+  fetchBeerPageByConditions(searchCondition?: SearchCondition, page: number = 1, perPage: number = 30): Observable<Beer[]> {
+    let params = new HttpParams();
+    if (searchCondition) {
+      searchCondition.name ? params = params.append('beer_name', searchCondition.name) : null;
+      searchCondition.abvLower ? params = params.append('abv_gt', searchCondition.abvLower - 1) : null;
+      searchCondition.abvUpper ? params = params.append('abv_lt', searchCondition.abvUpper + 1) : null;
+      searchCondition.ibuLower ? params = params.append('ibu_gt', searchCondition.ibuLower - 1) : null;
+      searchCondition.ibuUpper ? params = params.append('ibu_lt', searchCondition.ibuUpper + 1) : null;
+      searchCondition.ebcLower ? params = params.append('ebc_gt', searchCondition.ebcLower - 1) : null;
+      searchCondition.ebcUpper ? params = params.append('ebc_lt', searchCondition.ebcUpper + 1) : null;
+      searchCondition.brewedAfter ? params = params.append('brewed_after', this.formatDate(searchCondition.brewedAfter)) : null;
+      searchCondition.brewedBefore ? params = params.append('brewed_before', this.formatDate(searchCondition.brewedBefore)) : null;
+    }
+    params = params.append('page', page);
+    params = params.append('per_page', perPage);
+    console.debug(`search beers with condition: ${JSON.stringify(searchCondition)}`);
+    console.debug(`search beers with params: ${JSON.stringify(params)}`);
+    console.debug(`page: ${page}`);
     return this.httpClient.get<Beer[]>(this.beersUrl, {params: params});
   }
 
-  // getBeersByConditions(): Observable<Beer[]> {
-  // }
+  /**
+   * Format date string to suitable format to API
+   * @param dateString
+   * @private
+   */
+  private formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}-${year}`;
+  }
 
   /**
    * Handle error both from client and backend.
@@ -122,6 +139,9 @@ export class BeerService {
   }
 }
 
+/**
+ * SearchCondition
+ */
 export interface SearchCondition {
   name?: string;
   abvLower?: number;
@@ -130,4 +150,6 @@ export interface SearchCondition {
   ibuUpper?: number;
   ebcLower?: number;
   ebcUpper?: number;
+  brewedAfter?: string;
+  brewedBefore?: string;
 }

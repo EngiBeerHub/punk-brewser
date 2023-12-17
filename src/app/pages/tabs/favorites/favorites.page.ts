@@ -46,7 +46,7 @@ export class FavoritesPage {
     this.isLoadedBeers = false;
     // fetch favorite beers
     this.favIds = this.storageService.favIds;
-    this.beerService.getBeersByIds(this.favIds).subscribe({
+    this.beerService.fetchBeersByIds(this.favIds).subscribe({
       next: fetchedBeers => {
         this.favBeers = fetchedBeers;
         this.isLoadedBeers = true;

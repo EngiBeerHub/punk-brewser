@@ -41,7 +41,7 @@
   </ng-template>
 
   <!-- infinite scroll to load next beer list -->
-  <ion-infinite-scroll *ngIf="isLoadedBeers" [disabled]="isSearched" (ionInfinite)="onScroll($event)">
+  <ion-infinite-scroll *ngIf="isLoadedBeers" (ionInfinite)="onScroll($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
@@ -77,7 +77,7 @@
                   <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isAbvEnabled">ABV:</ion-checkbox>
                 </ion-col>
                 <ion-col size="8">
-                  <ion-range dualKnobs="true" pin="true" [value]="{lower: abvRange.min, upper: abvRange.max}"
+                  <ion-range dualKnobs="true" pin="true" [value]="{lower: abvValue.lower, upper: abvValue.upper}"
                              [max]="abvRange.max" [disabled]="!isAbvEnabled" (ionChange)="onChangeAbv($event)">
                   </ion-range>
                 </ion-col>
@@ -92,7 +92,7 @@
                   <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isIbuEnabled">IBU:</ion-checkbox>
                 </ion-col>
                 <ion-col size="8">
-                  <ion-range dualKnobs="true" pin="true" [value]="{lower: ibuRange.min, upper: ibuRange.max}"
+                  <ion-range dualKnobs="true" pin="true" [value]="{lower: ibuValue.lower, upper: ibuValue.upper}"
                              [max]="ibuRange.max"
                              [disabled]="!isIbuEnabled" (ionChange)="onChangeIbu($event)">
                   </ion-range>
@@ -108,7 +108,7 @@
                   <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isEbcEnabled">EBC:</ion-checkbox>
                 </ion-col>
                 <ion-col size="8">
-                  <ion-range dualKnobs="true" pin="true" [value]="{lower: ebcRange.min, upper: ebcRange.max}"
+                  <ion-range dualKnobs="true" pin="true" [value]="{lower: ebcValue.lower, upper: ebcValue.upper}"
                              [max]="ebcRange.max"
                              [disabled]="!isEbcEnabled" (ionChange)="onChangeEbc($event)">
                   </ion-range>
@@ -130,8 +130,9 @@
                   <!-- date picker -->
                   <ion-modal [keepContentsMounted]="true">
                     <ng-template>
-                      <ion-datetime id="brewed-after" presentation="date" preferWheel="true" locale="en-us"
-                                    showDefaultButtons="true" (ionChange)="onChangeBrewedAfter($event)"></ion-datetime>
+                      <ion-datetime id="brewed-after" presentation="month-year" preferWheel="true" locale="en-us"
+                                    showDefaultButtons="true" [value]="brewedAfter"
+                                    (ionChange)="onChangeBrewedAfter($event)"></ion-datetime>
                     </ng-template>
                   </ion-modal>
                 </ion-col>
@@ -154,8 +155,9 @@
                   <!-- date picker -->
                   <ion-modal [keepContentsMounted]="true">
                     <ng-template>
-                      <ion-datetime id="brewed-before" presentation="date" preferWheel="true" locale="en-us"
-                                    showDefaultButtons="true" (ionChange)="onChangeBrewedBefore($event)"></ion-datetime>
+                      <ion-datetime id="brewed-before" presentation="month-year" preferWheel="true" locale="en-us"
+                                    showDefaultButtons="true" [value]="brewedBefore"
+                                    (ionChange)="onChangeBrewedBefore($event)"></ion-datetime>
                     </ng-template>
                   </ion-modal>
                 </ion-col>

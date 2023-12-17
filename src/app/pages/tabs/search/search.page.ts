@@ -33,7 +33,7 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
-import {BeerService} from "../../../services/beer.service";
+import {BeerService, SearchCondition} from "../../../services/beer.service";
 import {Beer} from "../../../models/beer";
 import {NgForOf, NgIf} from "@angular/common";
 import {DatetimeCustomEvent, InfiniteScrollCustomEvent, RangeCustomEvent, SearchbarCustomEvent} from "@ionic/angular";
@@ -68,12 +68,11 @@ export class SearchPage implements OnInit {
   });
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
   readonly defaultPage = 1;
-  pageIndex = 1;
+  pageIndex = this.defaultPage;
   beers?: Beer[];
   // to show skeleton
   isLoadedBeers = false;
-  // search mode to prevent scroll event
-  isSearched = false;
+  searchText?: string | null;
   // ABV
   isAbvEnabled = false; // bind to checkbox
   readonly abvRange: Range = {min: 0, max: 60}; // abv value range
@@ -88,10 +87,12 @@ export class SearchPage implements OnInit {
   ebcValue: RangeValue = {lower: this.ebcRange.min, upper: this.ebcRange.max};
   // Brewed After
   isBrewedAfterEnabled = false;
-  brewedAfter = '';
+  brewedAfter?: string;
   // Brewed Before
   isBrewedBeforeEnabled = false;
-  brewedBefore = '';
+  brewedBefore?: string;
+
+  searchCondition?: SearchCondition;
 
   constructor(private beerService: BeerService, private storage: StorageService, private router: Router) {
   }
@@ -107,9 +108,8 @@ export class SearchPage implements OnInit {
    */
   private fetchFirstPage() {
     this.resetPageIndex();
-    this.isSearched = false;
     this.isLoadedBeers = false;
-    this.beerService.getPage(this.defaultPage).subscribe({
+    this.beerService.fetchBeerPageByConditions(undefined, this.defaultPage).subscribe({
         next: fetchedBeers => {
           this.beers = fetchedBeers;
         },
@@ -142,7 +142,8 @@ export class SearchPage implements OnInit {
    */
   onScroll(event: InfiniteScrollCustomEvent) {
     // get next page
-    this.beerService.getPage(this.pageIndex++).subscribe({
+    if (this.searchCondition) {
+      this.beerService.fetchBeerPageByConditions(this.searchCondition!, ++this.pageIndex).subscribe({
         next: fetchedBeers => {
           this.beers?.push(...fetchedBeers);
           void event.target.complete();
@@ -150,8 +151,19 @@ export class SearchPage implements OnInit {
         error: () => {
           void event.target.complete();
         }
-      }
-    );
+      });
+    } else {
+      this.beerService.fetchBeerPageByConditions(undefined, ++this.pageIndex).subscribe({
+          next: fetchedBeers => {
+            this.beers?.push(...fetchedBeers);
+            void event.target.complete();
+          },
+          error: () => {
+            void event.target.complete();
+          }
+        }
+      );
+    }
   }
 
   /**
@@ -196,20 +208,12 @@ export class SearchPage implements OnInit {
    * @param event
    */
   onChangeSearchbar(event: SearchbarCustomEvent) {
-    console.log(`search value: ${event.target.value}`);
+    console.debug(`search value: ${event.target.value}`);
     void Keyboard.hide();
+    this.searchText = event.target.value;
 
     if (event.target.value) { // if some name searched
-      this.isLoadedBeers = false;
-      this.beerService.getBeersByName(event.target.value).subscribe({
-        next: fetchedBeers => {
-          this.beers = fetchedBeers;
-        },
-        complete: () => {
-          this.isSearched = true;
-          this.isLoadedBeers = true;
-        }
-      });
+      this.searchWithCondition();
     } else if (event.target.value === '') { // if entered with blank, fetch all beers again
       // Fetch first page again
       this.fetchFirstPage();
@@ -287,7 +291,47 @@ export class SearchPage implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
+  /**
+   * Handle applying filtering
+   */
   onApplyFiltering() {
-    console.debug('filtering done.');
+    console.debug('filtering applied.');
+    // if checked but undefined, today
+    if (this.isBrewedAfterEnabled && !this.brewedAfter) {
+      this.brewedAfter = this.getTodayString();
+    }
+    // if checked but undefined, today
+    if (this.isBrewedBeforeEnabled && !this.brewedBefore) {
+      this.brewedBefore = this.getTodayString();
+    }
+    this.searchCondition = {
+      name: this.searchText ? this.searchText : undefined,
+      abvLower: this.isAbvEnabled ? this.abvValue.lower : undefined,
+      abvUpper: this.isAbvEnabled ? this.abvValue.upper : undefined,
+      ibuLower: this.isIbuEnabled ? this.ibuValue.lower : undefined,
+      ibuUpper: this.isIbuEnabled ? this.ibuValue.upper : undefined,
+      ebcLower: this.isEbcEnabled ? this.ebcValue.lower : undefined,
+      ebcUpper: this.isEbcEnabled ? this.ebcValue.upper : undefined,
+      brewedAfter: this.isBrewedAfterEnabled ? this.brewedAfter : undefined,
+      brewedBefore: this.isBrewedBeforeEnabled ? this.brewedBefore : undefined
+    };
+    this.searchWithCondition();
   }
+
+  /**
+   * Search beers with conditions
+   * @private
+   */
+  private searchWithCondition(page: number = 1) {
+    this.resetPageIndex();
+    this.isLoadedBeers = false;
+    this.beerService.fetchBeerPageByConditions(this.searchCondition, page).subscribe({
+      next: fetchedBeers => {
+        this.beers = fetchedBeers;
+      },
+      complete: () => {
+        this.isLoadedBeers = true;
+      }
+    });
+  };
 }
