@@ -211,13 +211,15 @@ export class SearchPage implements OnInit {
     console.debug(`search value: ${event.target.value}`);
     void Keyboard.hide();
     this.searchText = event.target.value;
+    this.updateSearchCondition();
+    this.searchWithCondition();
 
-    if (event.target.value) { // if some name searched
-      this.searchWithCondition();
-    } else if (event.target.value === '') { // if entered with blank, fetch all beers again
-      // Fetch first page again
-      this.fetchFirstPage();
-    }
+    // if (event.target.value) { // if some name searched
+    //   this.searchWithCondition();
+    // } else if (event.target.value === '') { // if entered with blank, fetch all beers again
+    //   // Fetch first page again
+    //   this.fetchFirstPage();
+    // }
   }
 
   /**
@@ -304,6 +306,11 @@ export class SearchPage implements OnInit {
     if (this.isBrewedBeforeEnabled && !this.brewedBefore) {
       this.brewedBefore = this.getTodayString();
     }
+    this.updateSearchCondition();
+    this.searchWithCondition();
+  }
+
+  private updateSearchCondition() {
     this.searchCondition = {
       name: this.searchText ? this.searchText : undefined,
       abvLower: this.isAbvEnabled ? this.abvValue.lower : undefined,
@@ -315,7 +322,6 @@ export class SearchPage implements OnInit {
       brewedAfter: this.isBrewedAfterEnabled ? this.brewedAfter : undefined,
       brewedBefore: this.isBrewedBeforeEnabled ? this.brewedBefore : undefined
     };
-    this.searchWithCondition();
   }
 
   /**
