@@ -70,29 +70,63 @@
       <ion-content>
         <!-- filtering options -->
         <ion-list>
+          <!-- ABV -->
           <ion-item>
-            <ion-range labelPlacement="fixed" label="ABV:" dualKnobs="true"
-                       [value]="{lower: 0, upper: 60}" max="60"
-                       pin="true"></ion-range>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4">
+                  <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isAbvEnabled">ABV:</ion-checkbox>
+                </ion-col>
+                <ion-col size="8">
+                  <ion-range dualKnobs="true" pin="true" [value]="{lower: abvRange.min, upper: abvRange.max}"
+                             [max]="abvRange.max"
+                             [disabled]="!isAbvEnabled" (ionInput)="onInputAbv($event)">
+                  </ion-range>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </ion-item>
+          <!-- IBU -->
           <ion-item>
-            <ion-range labelPlacement="fixed" label="IBU:" dualKnobs="true"
-                       [value]="{lower: 0, upper: 250}" max="250"
-                       pin="true"></ion-range>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4">
+                  <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isIbuEnabled">IBU:</ion-checkbox>
+                </ion-col>
+                <ion-col size="8">
+                  <ion-range dualKnobs="true" pin="true" [value]="{lower: ibuRange.min, upper: ibuRange.max}"
+                             [max]="ibuRange.max"
+                             [disabled]="!isIbuEnabled" (ionInput)="onInputIbu($event)">
+                  </ion-range>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </ion-item>
+          <!-- EBC -->
           <ion-item>
-            <ion-range labelPlacement="fixed" label="EBC:" dualKnobs="true"
-                       [value]="{lower: 0, upper: 600}" max="600"
-                       pin="true"></ion-range>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4">
+                  <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isEbcEnabled">EBC:</ion-checkbox>
+                </ion-col>
+                <ion-col size="8">
+                  <ion-range dualKnobs="true" pin="true" [value]="{lower: ebcRange.min, upper: ebcRange.max}"
+                             [max]="ebcRange.max"
+                             [disabled]="!isEbcEnabled" (ionInput)="onInputEbc($event)">
+                  </ion-range>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </ion-item>
-          <ion-item style="padding-top: 18.5px">
-            <ion-grid style="--ion-grid-padding: 0">
+          <!-- Brewed After -->
+          <ion-item>
+            <ion-grid>
               <ion-row class="ion-align-items-center">
-                <ion-col style="--ion-grid-column-padding: 0">
+                <ion-col>
                   <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isBrewedAfterEnabled">Brewed After:
                   </ion-checkbox>
                 </ion-col>
-                <ion-col style="--ion-grid-column-padding: 0">
+                <ion-col>
                   <!-- button to show date picker -->
                   <ion-datetime-button datetime="brewed-after" [disabled]="!isBrewedAfterEnabled"></ion-datetime-button>
                   <!-- date picker -->
@@ -106,15 +140,16 @@
               </ion-row>
             </ion-grid>
           </ion-item>
-          <ion-item style="padding-top: 18.5px">
-            <ion-grid style="--ion-grid-padding: 0">
+          <!-- Brewed Before -->
+          <ion-item>
+            <ion-grid>
               <ion-row class="ion-align-items-center">
-                <ion-col style="--ion-grid-column-padding: 0">
+                <ion-col>
                   <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isBrewedBeforeEnabled">Brewed
                     Before:
                   </ion-checkbox>
                 </ion-col>
-                <ion-col style="--ion-grid-column-padding: 0">
+                <ion-col>
                   <!-- button to show date picker -->
                   <ion-datetime-button datetime="brewed-before"
                                        [disabled]="!isBrewedBeforeEnabled"></ion-datetime-button>
@@ -133,7 +168,7 @@
 
         <!-- apply button -->
         <ion-button class="ion-margin-horizontal" shape="round"
-                    style="position: fixed; bottom: 15vh; left: 0; right: 0"
+                    style="position: fixed; bottom: 20vh; left: 0; right: 0"
                     (click)="modal.dismiss()">Apply
         </ion-button>
       </ion-content>

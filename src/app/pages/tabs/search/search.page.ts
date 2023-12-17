@@ -36,11 +36,23 @@ import {
 import {BeerService} from "../../../services/beer.service";
 import {Beer} from "../../../models/beer";
 import {NgForOf, NgIf} from "@angular/common";
-import {InfiniteScrollCustomEvent, SearchbarCustomEvent} from "@ionic/angular";
+import {InfiniteScrollCustomEvent, RangeCustomEvent, SearchbarCustomEvent} from "@ionic/angular";
 import {Router} from "@angular/router";
 import {StorageService} from "../../../services/storage.service";
 import {Keyboard} from "@capacitor/keyboard";
 import {FormsModule} from "@angular/forms";
+
+// Range limit
+interface Range {
+  min: number;
+  max: number;
+}
+
+// Range value
+interface RangeValue {
+  lower: number;
+  upper: number;
+}
 
 @Component({
   selector: 'app-search',
@@ -62,7 +74,18 @@ export class SearchPage implements OnInit {
   isLoadedBeers = false;
   // search mode to prevent scroll event
   isSearched = false;
-  // bind to checkboxes
+  // ABV
+  isAbvEnabled = false; // bind to checkbox
+  readonly abvRange: Range = {min: 0, max: 60}; // abv value range
+  abvValue: RangeValue = {lower: this.abvRange.min, upper: this.abvRange.max}; // abv value
+  // IBU
+  isIbuEnabled = false;
+  readonly ibuRange: Range = {min: 0, max: 250};
+  ibuValue: RangeValue = {lower: this.ibuRange.min, upper: this.ibuRange.max};
+  // EBC
+  isEbcEnabled = false;
+  readonly ebcRange: Range = {min: 0, max: 600};
+  ebcValue: RangeValue = {lower: this.ebcRange.min, upper: this.ebcRange.max};
   isBrewedAfterEnabled = false;
   isBrewedBeforeEnabled = false;
 
@@ -207,5 +230,17 @@ export class SearchPage implements OnInit {
    */
   async disableDismiss(data?: any, role?: string) {
     return role !== 'gesture';
+  }
+
+  onInputAbv(event: RangeCustomEvent) {
+    this.abvValue = event.target.value as RangeValue;
+  }
+
+  onInputIbu(event: RangeCustomEvent) {
+    this.ibuValue = event.target.value as RangeValue;
+  }
+
+  onInputEbc(event: RangeCustomEvent) {
+    this.ebcValue = event.target.value as RangeValue;
   }
 }
