@@ -36,7 +36,7 @@ import {
 import {BeerService} from "../../../services/beer.service";
 import {Beer} from "../../../models/beer";
 import {NgForOf, NgIf} from "@angular/common";
-import {InfiniteScrollCustomEvent, RangeCustomEvent, SearchbarCustomEvent} from "@ionic/angular";
+import {DatetimeCustomEvent, InfiniteScrollCustomEvent, RangeCustomEvent, SearchbarCustomEvent} from "@ionic/angular";
 import {Router} from "@angular/router";
 import {StorageService} from "../../../services/storage.service";
 import {Keyboard} from "@capacitor/keyboard";
@@ -86,8 +86,12 @@ export class SearchPage implements OnInit {
   isEbcEnabled = false;
   readonly ebcRange: Range = {min: 0, max: 600};
   ebcValue: RangeValue = {lower: this.ebcRange.min, upper: this.ebcRange.max};
+  // Brewed After
   isBrewedAfterEnabled = false;
+  brewedAfter = '';
+  // Brewed Before
   isBrewedBeforeEnabled = false;
+  brewedBefore = '';
 
   constructor(private beerService: BeerService, private storage: StorageService, private router: Router) {
   }
@@ -136,7 +140,7 @@ export class SearchPage implements OnInit {
    * Handle infinite scroll event when not search mode
    * @param event
    */
-  handleScroll(event: InfiniteScrollCustomEvent) {
+  onScroll(event: InfiniteScrollCustomEvent) {
     // get next page
     this.beerService.getPage(this.pageIndex++).subscribe({
         next: fetchedBeers => {
@@ -191,7 +195,7 @@ export class SearchPage implements OnInit {
    * Handle value change of searchbar
    * @param event
    */
-  handleSearch(event: SearchbarCustomEvent) {
+  onChangeSearchbar(event: SearchbarCustomEvent) {
     console.log(`search value: ${event.target.value}`);
     void Keyboard.hide();
 
@@ -213,17 +217,6 @@ export class SearchPage implements OnInit {
   }
 
   /**
-   * Handle clear button of searchbar
-   */
-  handleClearSearch() {
-    // Fetch first page again
-    this.fetchFirstPage();
-  }
-
-  handleCancelSearch() {
-  }
-
-  /**
    * Necessary to disable dismiss by swipe
    * @param data
    * @param role
@@ -232,15 +225,69 @@ export class SearchPage implements OnInit {
     return role !== 'gesture';
   }
 
-  onInputAbv(event: RangeCustomEvent) {
+  /**
+   * Handle change of AVB
+   * @param event
+   */
+  onChangeAbv(event: RangeCustomEvent) {
     this.abvValue = event.target.value as RangeValue;
   }
 
-  onInputIbu(event: RangeCustomEvent) {
+  /**
+   * Handle change of IBU
+   * @param event
+   */
+  onChangeIbu(event: RangeCustomEvent) {
     this.ibuValue = event.target.value as RangeValue;
   }
 
-  onInputEbc(event: RangeCustomEvent) {
+  /**
+   * Handle change of EBC
+   * @param event
+   */
+  onChangeEbc(event: RangeCustomEvent) {
     this.ebcValue = event.target.value as RangeValue;
+  }
+
+  /**
+   * Handle change of Brewed After
+   * @param event
+   */
+  onChangeBrewedAfter(event: DatetimeCustomEvent) {
+    // if not changed, undefined is fired
+    if (event.target.value == null) {
+      this.brewedAfter = this.getTodayString();
+    } else {
+      this.brewedAfter = event.target.value as string;
+    }
+  }
+
+  /**
+   * Handle change of Brewed Before
+   * @param event
+   */
+  onChangeBrewedBefore(event: DatetimeCustomEvent) {
+    // if not changed, undefined is fired
+    if (event.target.value == null) {
+      this.brewedBefore = this.getTodayString();
+    } else {
+      this.brewedBefore = event.target.value as string;
+    }
+  }
+
+  /**
+   * Get today's string
+   * @private
+   */
+  private getTodayString(): string {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  onApplyFiltering() {
+    console.debug('filtering done.');
   }
 }

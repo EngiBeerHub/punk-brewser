@@ -1,8 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-searchbar class="ion-margin-top" animated="true" placeholder="Enter beer name" showCancelButton="focus"
-                   (ionChange)="handleSearch($event)" (ionClear)="handleClearSearch()"
-                   (ionCancel)="handleCancelSearch()"></ion-searchbar>
+                   (ionChange)="onChangeSearchbar($event)"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -42,7 +41,7 @@
   </ng-template>
 
   <!-- infinite scroll to load next beer list -->
-  <ion-infinite-scroll *ngIf="isLoadedBeers" [disabled]="isSearched" (ionInfinite)="handleScroll($event)">
+  <ion-infinite-scroll *ngIf="isLoadedBeers" [disabled]="isSearched" (ionInfinite)="onScroll($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
@@ -59,7 +58,7 @@
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-title>Filter</ion-title>
+          <ion-title>Filter Options</ion-title>
           <ion-buttons slot="end">
             <ion-button (click)="modal.dismiss()">
               <ion-icon name="close-circle-outline" color="medium"></ion-icon>
@@ -79,8 +78,7 @@
                 </ion-col>
                 <ion-col size="8">
                   <ion-range dualKnobs="true" pin="true" [value]="{lower: abvRange.min, upper: abvRange.max}"
-                             [max]="abvRange.max"
-                             [disabled]="!isAbvEnabled" (ionInput)="onInputAbv($event)">
+                             [max]="abvRange.max" [disabled]="!isAbvEnabled" (ionChange)="onChangeAbv($event)">
                   </ion-range>
                 </ion-col>
               </ion-row>
@@ -96,7 +94,7 @@
                 <ion-col size="8">
                   <ion-range dualKnobs="true" pin="true" [value]="{lower: ibuRange.min, upper: ibuRange.max}"
                              [max]="ibuRange.max"
-                             [disabled]="!isIbuEnabled" (ionInput)="onInputIbu($event)">
+                             [disabled]="!isIbuEnabled" (ionChange)="onChangeIbu($event)">
                   </ion-range>
                 </ion-col>
               </ion-row>
@@ -112,7 +110,7 @@
                 <ion-col size="8">
                   <ion-range dualKnobs="true" pin="true" [value]="{lower: ebcRange.min, upper: ebcRange.max}"
                              [max]="ebcRange.max"
-                             [disabled]="!isEbcEnabled" (ionInput)="onInputEbc($event)">
+                             [disabled]="!isEbcEnabled" (ionChange)="onChangeEbc($event)">
                   </ion-range>
                 </ion-col>
               </ion-row>
@@ -133,7 +131,7 @@
                   <ion-modal [keepContentsMounted]="true">
                     <ng-template>
                       <ion-datetime id="brewed-after" presentation="date" preferWheel="true" locale="en-us"
-                                    showDefaultButtons="true"></ion-datetime>
+                                    showDefaultButtons="true" (ionChange)="onChangeBrewedAfter($event)"></ion-datetime>
                     </ng-template>
                   </ion-modal>
                 </ion-col>
@@ -157,7 +155,7 @@
                   <ion-modal [keepContentsMounted]="true">
                     <ng-template>
                       <ion-datetime id="brewed-before" presentation="date" preferWheel="true" locale="en-us"
-                                    showDefaultButtons="true"></ion-datetime>
+                                    showDefaultButtons="true" (ionChange)="onChangeBrewedBefore($event)"></ion-datetime>
                     </ng-template>
                   </ion-modal>
                 </ion-col>
@@ -169,7 +167,7 @@
         <!-- apply button -->
         <ion-button class="ion-margin-horizontal" shape="round"
                     style="position: fixed; bottom: 20vh; left: 0; right: 0"
-                    (click)="modal.dismiss()">Apply
+                    (click)="modal.dismiss(); onApplyFiltering()">Apply
         </ion-button>
       </ion-content>
     </ng-template>

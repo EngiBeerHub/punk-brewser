@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {
   catchError,
   concatMap,
@@ -24,13 +24,6 @@ export class BeerService {
   private readonly beersUrl = 'https://api.punkapi.com/v2/beers';
 
   constructor(private httpClient: HttpClient) {
-  }
-
-  /**
-   * GET beers from API
-   */
-  getBeers(): Observable<Beer[]> {
-    return this.httpClient.get<Beer[]>(this.beersUrl);
   }
 
   /**
@@ -80,8 +73,8 @@ export class BeerService {
    * @returns beer list
    */
   getPage(page: number, perPage = 30): Observable<Beer[]> {
-    const url = `${this.beersUrl}?page=${page}&per_page=${perPage}`;
-    return this.httpClient.get<Beer[]>(url);
+    const params = new HttpParams().set('page', page).set('per_page', perPage);
+    return this.httpClient.get<Beer[]>(this.beersUrl, {params: params});
   }
 
   /**
@@ -89,8 +82,8 @@ export class BeerService {
    * @param ids
    */
   getBeersByIds(ids: number[]): Observable<Beer[]> {
-    const url = `${this.beersUrl}?ids=${ids.join('|')}`;
-    return this.httpClient.get<Beer[]>(url);
+    const params = new HttpParams().set('ids', ids.join('|'));
+    return this.httpClient.get<Beer[]>(this.beersUrl, {params: params});
   }
 
   /**
@@ -98,9 +91,12 @@ export class BeerService {
    * @param name
    */
   getBeersByName(name: string): Observable<Beer[]> {
-    const url = `${this.beersUrl}?beer_name=${name}`;
-    return this.httpClient.get<Beer[]>(url);
+    const params = new HttpParams().set('beer_name', name);
+    return this.httpClient.get<Beer[]>(this.beersUrl, {params: params});
   }
+
+  // getBeersByConditions(): Observable<Beer[]> {
+  // }
 
   /**
    * Handle error both from client and backend.
@@ -124,4 +120,14 @@ export class BeerService {
       () => new Error('An error occurred. Please try again later.'),
     );
   }
+}
+
+export interface SearchCondition {
+  name?: string;
+  abvLower?: number;
+  abvUpper?: number;
+  ibuLower?: number;
+  ibuUpper?: number;
+  ebcLower?: number;
+  ebcUpper?: number;
 }
