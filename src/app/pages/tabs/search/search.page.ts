@@ -310,6 +310,33 @@ export class SearchPage implements OnInit {
     this.searchWithCondition();
   }
 
+  /**
+   * Handle clearing filtering
+   */
+  onClearFiltering() {
+    // ABV
+    this.isAbvEnabled = false; // bind to checkbox
+    this.abvValue = {lower: this.abvRange.min, upper: this.abvRange.max}; // abv value
+    // IBU
+    this.isIbuEnabled = false;
+    this.ibuValue = {lower: this.ibuRange.min, upper: this.ibuRange.max};
+    // EBC
+    this.isEbcEnabled = false;
+    this.ebcValue = {lower: this.ebcRange.min, upper: this.ebcRange.max};
+    // Brewed After
+    this.isBrewedAfterEnabled = false;
+    this.brewedAfter = undefined;
+    // Brewed Before
+    this.isBrewedBeforeEnabled = false;
+    this.brewedBefore = undefined;
+
+    this.searchCondition = undefined;
+  }
+
+  /**
+   * Update search condition
+   * @private
+   */
   private updateSearchCondition() {
     this.searchCondition = {
       name: this.searchText ? this.searchText : undefined,
