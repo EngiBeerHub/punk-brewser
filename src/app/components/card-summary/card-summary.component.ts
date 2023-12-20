@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {
+  AnimationController,
   IonButton,
   IonCard,
   IonCardContent,
@@ -28,7 +29,8 @@ import {StorageService} from "../../services/storage.service";
               <!-- prevent height change from lazy loading image -->
               <div class="img-container">
                   <!-- lazy loading image -->
-                  <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL"></ion-img>
+                  <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL"
+                           (ionImgWillLoad)="onLoadImage($event)"></ion-img>
               </div>
 
               <!-- favorite button -->
@@ -86,7 +88,7 @@ export class CardSummaryComponent implements OnInit {
   // isFavorite = false;
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private router: Router, private storage: StorageService, private toastController: ToastController) {
+  constructor(private router: Router, private storage: StorageService, private toastController: ToastController, private animationCtrl: AnimationController) {
   }
 
   ngOnInit(): void {
@@ -115,6 +117,18 @@ export class CardSummaryComponent implements OnInit {
     event.stopPropagation();
     void this.showToast();
     this.toggleFavorite();
+  }
+
+  /**
+   * Handle load image and add fade in animation
+   * @param event
+   */
+  onLoadImage(event: any) {
+    const animation = this.animationCtrl.create()
+      .addElement(event.target)
+      .duration(500)
+      .fromTo('opacity', '0', '1');
+    void animation.play();
   }
 
   /**

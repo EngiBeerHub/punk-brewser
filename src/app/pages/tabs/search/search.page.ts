@@ -1,5 +1,6 @@
 import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {
+  AnimationController,
   IonAvatar,
   IonButton,
   IonButtons,
@@ -94,7 +95,7 @@ export class SearchPage implements OnInit {
 
   searchCondition?: SearchCondition;
 
-  constructor(private beerService: BeerService, private storage: StorageService, private router: Router) {
+  constructor(private beerService: BeerService, private storage: StorageService, private router: Router, private animationCtrl: AnimationController) {
   }
 
   ngOnInit() {
@@ -189,6 +190,14 @@ export class SearchPage implements OnInit {
   onClickFavButton(event: MouseEvent, beerId: number) {
     event.stopPropagation();
     this.toggleFavorite(beerId);
+  }
+
+  onLoadImage(event: any) {
+    const animation = this.animationCtrl.create()
+      .addElement(event.target)
+      .duration(500)
+      .fromTo('opacity', '0', '1');
+    void animation.play();
   }
 
   /**

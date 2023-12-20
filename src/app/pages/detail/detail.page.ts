@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {
+  AnimationController,
   IonBackButton,
   IonButton,
   IonButtons,
@@ -76,7 +77,7 @@ export class DetailPage implements OnInit {
   isFavorite = false;
   private readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private storage: StorageService) {
+  constructor(private storage: StorageService, private animationCtrl: AnimationController) {
     addIcons({starOutline});
   }
 
@@ -98,6 +99,18 @@ export class DetailPage implements OnInit {
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
     this.toggleFavorite();
+  }
+
+  /**
+   * Handle load image and add fade in animation
+   * @param event
+   */
+  onLoadImage(event: any) {
+    const animation = this.animationCtrl.create()
+      .addElement(event.target)
+      .duration(500)
+      .fromTo('opacity', '0', '1');
+    void animation.play();
   }
 
   /**
