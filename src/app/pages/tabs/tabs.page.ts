@@ -2,6 +2,7 @@ import {Component, EnvironmentInjector, inject} from '@angular/core';
 import {IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs,} from '@ionic/angular/standalone';
 import {addIcons} from 'ionicons';
 import {
+  beerOutline,
   checkmarkCircle,
   checkmarkCircleOutline,
   checkmarkSharp,
@@ -43,6 +44,7 @@ export class TabsPage {
 
   constructor() {
     addIcons({
+      beerOutline,
       checkmarkCircle,
       checkmarkCircleOutline,
       checkmarkSharp,

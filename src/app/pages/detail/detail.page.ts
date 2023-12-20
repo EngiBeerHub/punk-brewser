@@ -10,15 +10,21 @@ import {
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
+  IonCol,
   IonContent,
+  IonGrid,
   IonHeader,
   IonIcon,
   IonImg,
   IonItem,
+  IonItemDivider,
+  IonItemGroup,
   IonLabel,
   IonList,
+  IonProgressBar,
   IonRefresher,
   IonRefresherContent,
+  IonRow,
   IonSkeletonText,
   IonText,
   IonThumbnail,
@@ -27,8 +33,9 @@ import {
 } from "@ionic/angular/standalone";
 import {Beer} from "../../models/beer";
 import {addIcons} from "ionicons";
-import {starOutline} from "ionicons/icons";
+import {beer, beerOutline, starOutline, water} from "ionicons/icons";
 import {StorageService} from "../../services/storage.service";
+import {BeerService} from "../../services/beer.service";
 
 /**
  * state passed from parent component
@@ -68,17 +75,24 @@ export interface RouterParameter {
     NgForOf,
     IonBackButton,
     IonButtons,
-    IonButton
+    IonButton,
+    IonItemDivider,
+    IonItemGroup,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonProgressBar
   ]
 })
 export class DetailPage implements OnInit {
   beer!: Beer;
   imageUrl?: string;
+  beerColor!: string;
   isFavorite = false;
   private readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private storage: StorageService, private animationCtrl: AnimationController) {
-    addIcons({starOutline});
+  constructor(private storage: StorageService, private animationCtrl: AnimationController, private beerService: BeerService) {
+    addIcons({starOutline, beer, beerOutline, water});
   }
 
   ngOnInit(): void {
@@ -86,10 +100,9 @@ export class DetailPage implements OnInit {
     const routerParam = history.state as RouterParameter;
     this.beer = routerParam.beer;
     this.isFavorite = routerParam.isFavorite;
+    this.beerColor = this.beerService.getSrmColor(this.beer.srm);
 
-    this.beer.image_url
-      ? (this.imageUrl = this.beer.image_url)
-      : (this.imageUrl = this.altImageUrl);
+    this.imageUrl = this.beer.image_url ?? this.altImageUrl;
   }
 
   /**
