@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-searchbar class="ion-margin-top" animated="true" placeholder="Enter beer name"
-                   (ionChange)="handleSearch($event)" (ionClear)="handleClearSearch()"></ion-searchbar>
+    <ion-searchbar class="ion-margin-top" animated="true" placeholder="Enter beer name" showCancelButton="focus"
+                   (ionChange)="onChangeSearchbar($event)"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -10,7 +10,8 @@
   <ion-list *ngIf="isLoadedBeers else skeleton">
     <ion-item *ngFor="let beer of beers; index as i; trackBy: trackByBeerId" (click)="onClickItem(beer)">
       <ion-thumbnail slot="start">
-        <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL" style="object-fit: contain;"></ion-img>
+        <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL" (ionImgWillLoad)="onLoadImage($event)"
+                 style="object-fit: contain;"></ion-img>
       </ion-thumbnail>
 
       <ion-label>{{ beer.name }}</ion-label>
@@ -40,15 +41,20 @@
     </ion-list>
   </ng-template>
 
+  <div *ngIf="isLoadedBeers && beers?.length === 0"
+       style="height: 100%; display: flex; justify-content: center; align-items: center">
+    <h1>No beers found.</h1>
+  </div>
+
   <!-- infinite scroll to load next beer list -->
-  <ion-infinite-scroll *ngIf="isLoadedBeers" [disabled]="isSearched" (ionInfinite)="handleScroll($event)">
+  <ion-infinite-scroll *ngIf="isLoadedBeers" (ionInfinite)="onScroll($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
   <!-- FAB to open filtering sheet modal -->
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
     <ion-fab-button id="open-modal">
-      <ion-icon name="options-sharp"></ion-icon>
+      <ion-icon name="options-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
@@ -58,7 +64,7 @@
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-title>Filter</ion-title>
+          <ion-title>Filtering Options</ion-title>
           <ion-buttons slot="end">
             <ion-button (click)="modal.dismiss()">
               <ion-icon name="close-circle-outline" color="medium"></ion-icon>
@@ -67,47 +73,111 @@
         </ion-toolbar>
       </ion-header>
       <ion-content>
-        <ion-searchbar show-cancel-button="focus"></ion-searchbar>
+        <!-- filtering options -->
         <ion-list>
+          <!-- ABV -->
           <ion-item>
-            <ion-range labelPlacement="fixed" label="ABV:" dualKnobs="true"
-                       [value]="{lower: 0, upper: 60}" max="60"
-                       pin="true"></ion-range>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4">
+                  <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isAbvEnabled">ABV:</ion-checkbox>
+                </ion-col>
+                <ion-col size="8">
+                  <ion-range dualKnobs="true" pin="true" [value]="{lower: abvValue.lower, upper: abvValue.upper}"
+                             [max]="abvRange.max" [disabled]="!isAbvEnabled" (ionChange)="onChangeAbv($event)">
+                  </ion-range>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </ion-item>
+          <!-- IBU -->
           <ion-item>
-            <ion-range labelPlacement="fixed" label="IBU:" dualKnobs="true"
-                       [value]="{lower: 0, upper: 250}" max="250"
-                       pin="true"></ion-range>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4">
+                  <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isIbuEnabled">IBU:</ion-checkbox>
+                </ion-col>
+                <ion-col size="8">
+                  <ion-range dualKnobs="true" pin="true" [value]="{lower: ibuValue.lower, upper: ibuValue.upper}"
+                             [max]="ibuRange.max"
+                             [disabled]="!isIbuEnabled" (ionChange)="onChangeIbu($event)">
+                  </ion-range>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </ion-item>
+          <!-- EBC -->
           <ion-item>
-            <ion-range labelPlacement="fixed" label="EBC:" dualKnobs="true"
-                       [value]="{lower: 0, upper: 600}" max="600"
-                       pin="true"></ion-range>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4">
+                  <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isEbcEnabled">EBC:</ion-checkbox>
+                </ion-col>
+                <ion-col size="8">
+                  <ion-range dualKnobs="true" pin="true" [value]="{lower: ebcValue.lower, upper: ebcValue.upper}"
+                             [max]="ebcRange.max"
+                             [disabled]="!isEbcEnabled" (ionChange)="onChangeEbc($event)">
+                  </ion-range>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </ion-item>
-          <ion-item style="--inner-padding-top: 20px">
-            <ion-label>Brewed After:</ion-label>
-            <ion-datetime-button datetime="brewed-after">date</ion-datetime-button>
-            <ion-modal [keepContentsMounted]="true">
-              <ng-template>
-                <ion-datetime id="brewed-after" presentation="date" preferWheel="true" locale="en-us"
-                              showDefaultButtons="true"></ion-datetime>
-              </ng-template>
-            </ion-modal>
+          <!-- Brewed After -->
+          <ion-item>
+            <ion-grid>
+              <ion-row class="ion-align-items-center">
+                <ion-col>
+                  <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isBrewedAfterEnabled">Brewed After:
+                  </ion-checkbox>
+                </ion-col>
+                <ion-col>
+                  <!-- button to show date picker -->
+                  <ion-datetime-button datetime="brewed-after" [disabled]="!isBrewedAfterEnabled"></ion-datetime-button>
+                  <!-- date picker -->
+                  <ion-modal [keepContentsMounted]="true">
+                    <ng-template>
+                      <ion-datetime id="brewed-after" presentation="month-year" preferWheel="true" locale="en-us"
+                                    showDefaultButtons="true" [value]="brewedAfter"
+                                    (ionChange)="onChangeBrewedAfter($event)"></ion-datetime>
+                    </ng-template>
+                  </ion-modal>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </ion-item>
-          <ion-item style="--inner-padding-top: 20px">
-            <ion-label>Brewed Before:</ion-label>
-            <ion-datetime-button datetime="brewed-before">date</ion-datetime-button>
-            <ion-modal [keepContentsMounted]="true">
-              <ng-template>
-                <ion-datetime id="brewed-before" presentation="date" preferWheel="true" locale="en-us"
-                              showDefaultButtons="true"></ion-datetime>
-              </ng-template>
-            </ion-modal>
+          <!-- Brewed Before -->
+          <ion-item>
+            <ion-grid>
+              <ion-row class="ion-align-items-center">
+                <ion-col>
+                  <ion-checkbox labelPlacement="end" justify="start" [(ngModel)]="isBrewedBeforeEnabled">Brewed
+                    Before:
+                  </ion-checkbox>
+                </ion-col>
+                <ion-col>
+                  <!-- button to show date picker -->
+                  <ion-datetime-button datetime="brewed-before"
+                                       [disabled]="!isBrewedBeforeEnabled"></ion-datetime-button>
+                  <!-- date picker -->
+                  <ion-modal [keepContentsMounted]="true">
+                    <ng-template>
+                      <ion-datetime id="brewed-before" presentation="month-year" preferWheel="true" locale="en-us"
+                                    showDefaultButtons="true" [value]="brewedBefore"
+                                    (ionChange)="onChangeBrewedBefore($event)"></ion-datetime>
+                    </ng-template>
+                  </ion-modal>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </ion-item>
         </ion-list>
-        <ion-button class="ion-margin-horizontal" expand="block" shape="round"
-                    style="margin-top: 36px"
-                    (click)="modal.dismiss()">Apply
+
+        <!-- apply button -->
+        <ion-button class="ion-margin-horizontal ion-margin-top" expand="block" shape="round"
+                    (click)="modal.dismiss(); onApplyFiltering()">Apply
+        </ion-button>
+        <ion-button class="ion-margin-horizontal ion-margin-top" expand="block" shape="round" fill="outline"
+                    (click)="onClearFiltering()">Clear All
         </ion-button>
       </ion-content>
     </ng-template>

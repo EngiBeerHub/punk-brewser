@@ -10,15 +10,29 @@
 <ion-content [fullscreen]="true">
   <ion-card>
     <ion-card-header>
-      <ion-card-title>{{ beer.name }}</ion-card-title>
-      <ion-card-subtitle>{{ beer.tagline }}({{ beer.abv }}%)</ion-card-subtitle>
+      <!-- beer icon and title -->
+      <ion-card-title>
+        <ion-grid class="ion-no-padding">
+          <ion-row class="ion-align-items-center">
+            <ion-col size="1.5">
+              <div style="display: flex; align-items: center">
+                <ion-icon *ngIf="beer.srm" name="beer" [style.color]="beerColor" style="padding-right: 4px"></ion-icon>
+              </div>
+            </ion-col>
+            <ion-col size="10.5">
+              <div style="display: flex; align-items: center">{{ beer.name }}</div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-title>
+      <ion-card-subtitle>{{ beer.tagline }}(ABV: {{ beer.abv }}%)</ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content>
       <!--   prevent height change from lazy loading image   -->
       <div class="img-container">
         <!--    lazy loading image    -->
-        <ion-img [src]="imageUrl"></ion-img>
+        <ion-img [src]="imageUrl" (ionImgWillLoad)="onLoadImage($event)"></ion-img>
       </div>
 
       <!-- favorite button -->
@@ -31,53 +45,74 @@
         </ion-button>
       </div>
 
+      <!--      <ion-item lines="none" class="ion-text-center">-->
+      <div class="ion-text-center">
+        <ion-label>IBU: {{ beer.ibu }}
+          <ion-progress-bar id="progressbar" [value]="ibuIndex"></ion-progress-bar>
+        </ion-label>
+      </div>
+      <!--      </ion-item>-->
+
       <!--   description   -->
-      <ion-text>{{ beer.description }}</ion-text>
+      <div class="ion-margin-top ion-margin-bottom">
+        <ion-text>{{ beer.description }}</ion-text>
+        <br>
+        <ion-text>{{ beer.brewers_tips }}</ion-text>
+      </div>
 
       <!--   detailed data   -->
       <ion-list>
-        <ion-item>
-          <ion-label class="ion-text-wrap">[First Brewed] - {{ beer.first_brewed }}</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label class="ion-text-wrap">[Ph] - {{ beer.ph }}</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label class="ion-text-wrap">[Contributed By]<br>{{ beer.contributed_by }}</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label class="ion-text-wrap">[Brewers Tips]<br>{{ beer.brewers_tips }}</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label class="ion-text-wrap">[Food Pairings]<br>{{ beer.food_pairing }}</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label class="ion-text-wrap">[Yeast]<br>{{ beer.ingredients.yeast }}</ion-label>
-        </ion-item>
-        <ion-item lines="none">
-          <ion-label class="ion-text-wrap">
-            [Malt]<br>
-            <ion-list>
-              <ion-item *ngFor="let malt of beer.ingredients.malt">
-                <ion-label class="ion-text-wrap">{{ malt.name }}
-                  ({{ malt.amount.value }}{{ malt.amount.unit }})
-                </ion-label>
-              </ion-item>
-            </ion-list>
-          </ion-label>
-        </ion-item>
-        <ion-item lines="none">
-          <ion-label class="ion-text-wrap">
-            [Hop]<br>
-            <ion-list>
-              <ion-item *ngFor="let hop of beer.ingredients.hops">
-                <ion-label class="ion-text-wrap">{{ hop.name }} ({{ hop.attribute }}
-                  , {{ hop.amount.value }}{{ hop.amount.unit }})
-                </ion-label>
-              </ion-item>
-            </ion-list>
-          </ion-label>
-        </ion-item>
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label>Summary</ion-label>
+          </ion-item-divider>
+          <ion-item>
+            <ion-label>First Brewed: {{ beer.first_brewed }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Ph: {{ beer.ph }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Contributed By:<br>{{ beer.contributed_by }}</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label>Yeast:<br>{{ beer.ingredients.yeast }}</ion-label>
+          </ion-item>
+        </ion-item-group>
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label>Malt</ion-label>
+          </ion-item-divider>
+          <ion-list>
+            <ion-item *ngFor="let malt of beer.ingredients.malt; let isLast = last" [lines]="isLast ? 'none' : 'inset'">
+              <ion-label>
+                {{ malt.name }}({{ malt.amount.value }}{{ malt.amount.unit }})
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-item-group>
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label>Hop</ion-label>
+          </ion-item-divider>
+          <ion-list>
+            <ion-item *ngFor="let hop of beer.ingredients.hops; let isLast = last" [lines]="isLast ? 'none' : 'inset'">
+              <ion-label>
+                {{ hop.name }}({{ hop.attribute }}, {{ hop.amount.value }}{{ hop.amount.unit }})
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-item-group>
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label>Food Pairing</ion-label>
+          </ion-item-divider>
+          <ion-list>
+            <ion-item *ngFor="let pairing of beer.food_pairing; let isLast = last" [lines]="isLast ? 'none' : 'inset'">
+              <ion-label>{{ pairing }}</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-item-group>
       </ion-list>
     </ion-card-content>
   </ion-card>

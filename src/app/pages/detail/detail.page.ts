@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {
+  AnimationController,
   IonBackButton,
   IonButton,
   IonButtons,
@@ -9,15 +10,21 @@ import {
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
+  IonCol,
   IonContent,
+  IonGrid,
   IonHeader,
   IonIcon,
   IonImg,
   IonItem,
+  IonItemDivider,
+  IonItemGroup,
   IonLabel,
   IonList,
+  IonProgressBar,
   IonRefresher,
   IonRefresherContent,
+  IonRow,
   IonSkeletonText,
   IonText,
   IonThumbnail,
@@ -26,8 +33,9 @@ import {
 } from "@ionic/angular/standalone";
 import {Beer} from "../../models/beer";
 import {addIcons} from "ionicons";
-import {starOutline} from "ionicons/icons";
+import {beer, beerOutline, starOutline, water} from "ionicons/icons";
 import {StorageService} from "../../services/storage.service";
+import {BeerService} from "../../services/beer.service";
 
 /**
  * state passed from parent component
@@ -67,17 +75,26 @@ export interface RouterParameter {
     NgForOf,
     IonBackButton,
     IonButtons,
-    IonButton
+    IonButton,
+    IonItemDivider,
+    IonItemGroup,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonProgressBar
   ]
 })
 export class DetailPage implements OnInit {
   beer!: Beer;
   imageUrl?: string;
+  beerColor!: string;
   isFavorite = false;
+  ibuIndex = 0;
+  ibuValue = 0;
   private readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private storage: StorageService) {
-    addIcons({starOutline});
+  constructor(private storage: StorageService, private animationCtrl: AnimationController, private beerService: BeerService) {
+    addIcons({starOutline, beer, beerOutline, water});
   }
 
   ngOnInit(): void {
@@ -85,10 +102,20 @@ export class DetailPage implements OnInit {
     const routerParam = history.state as RouterParameter;
     this.beer = routerParam.beer;
     this.isFavorite = routerParam.isFavorite;
+    this.beerColor = this.beerService.getSrmColor(this.beer.srm);
+    this.ibuValue = this.beer.ibu / 100;
 
-    this.beer.image_url
-      ? (this.imageUrl = this.beer.image_url)
-      : (this.imageUrl = this.altImageUrl);
+    this.imageUrl = this.beer.image_url ?? this.altImageUrl;
+  }
+
+  ionViewDidEnter() {
+    // animate progressbar according to IBU value
+    const interval = setInterval(() => {
+      this.ibuIndex += 0.01;
+      if (this.ibuIndex >= this.ibuValue) {
+        clearInterval(interval);
+      }
+    }, 7.5);
   }
 
   /**
@@ -98,6 +125,18 @@ export class DetailPage implements OnInit {
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
     this.toggleFavorite();
+  }
+
+  /**
+   * Handle load image and add fade in animation
+   * @param event
+   */
+  onLoadImage(event: any) {
+    const animation = this.animationCtrl.create()
+      .addElement(event.target)
+      .duration(500)
+      .fromTo('opacity', '0', '1');
+    void animation.play();
   }
 
   /**
