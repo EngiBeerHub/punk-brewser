@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {
   catchError,
   concatMap,
@@ -16,6 +16,49 @@ import {
 } from 'rxjs';
 import {Beer} from '../models/beer';
 
+const SRM_COLORS: { [key: number]: string } = {
+  1: '#FFE699',
+  2: '#FFD878',
+  3: '#FFCA5A',
+  4: '#FFBF42',
+  5: '#FBB123',
+  6: '#F8A600',
+  7: '#F39C00',
+  8: '#EA8F00',
+  9: '#E58500',
+  10: '#DE7C00',
+  11: '#D77200',
+  12: '#CF6900',
+  13: '#CB6200',
+  14: '#C35900',
+  15: '#BB5100',
+  16: '#B54C00',
+  17: '#B04500',
+  18: '#A63E00',
+  19: '#A13700',
+  20: '#9B3200',
+  21: '#952D00',
+  22: '#8E2900',
+  23: '#882300',
+  24: '#821E00',
+  25: '#7B1A00',
+  26: '#771900',
+  27: '#701400',
+  28: '#6A0E00',
+  29: '#660D00',
+  30: '#5E0B00',
+  31: '#5A0A02',
+  32: '#600903',
+  33: '#520907',
+  34: '#4C0505',
+  35: '#470606',
+  36: '#440607',
+  37: '#3F0708',
+  38: '#3B0607',
+  39: '#3A070B',
+  40: '#36080A',
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,17 +70,23 @@ export class BeerService {
   }
 
   /**
-   * GET beers from API
+   * Get color code from SRM value
+   * @param srm
    */
-  getBeers(): Observable<Beer[]> {
-    return this.httpClient.get<Beer[]>(this.beersUrl);
+  getSrmColor(srm: number): string {
+    const roundedSrm = Math.round(srm);
+    if (roundedSrm > 40) {
+      return '#000000';
+    } else {
+      return SRM_COLORS[roundedSrm];
+    }
   }
 
   /**
    * GET a random beer from API
    * @returns a random beer
    */
-  getRandomBeer(): Observable<Beer> {
+  fetchRandomBeer(): Observable<Beer> {
     const randomBeerUrl = `${this.beersUrl}/random`;
     return this.httpClient.get<Beer[]>(randomBeerUrl).pipe(
       timeout(5000),
@@ -59,11 +108,11 @@ export class BeerService {
    * get multiple times until the end.
    * @returns all beers
    */
-  getAllBeers(): Observable<Beer[]> {
+  fetchAllBeers(): Observable<Beer[]> {
     let page = 1;
-    return this.getPage(page).pipe(
+    return this.fetchBeerPageByConditions(undefined, page).pipe(
       expand((pageData) =>
-        pageData.length > 0 ? this.getPage(++page) : EMPTY,
+        pageData.length > 0 ? this.fetchBeerPageByConditions(undefined, ++page) : EMPTY,
       ),
       tap((pageData) =>
         console.log(`got page data. page: ${page}, length: ${pageData.length}`),
@@ -74,32 +123,52 @@ export class BeerService {
   }
 
   /**
-   * GET a paginated data from API
-   * @param page page index starts from 1
-   * @param perPage beers per page
-   * @returns beer list
-   */
-  getPage(page: number, perPage = 30): Observable<Beer[]> {
-    const url = `${this.beersUrl}?page=${page}&per_page=${perPage}`;
-    return this.httpClient.get<Beer[]>(url);
-  }
-
-  /**
    * GET beers by specified IDs
    * @param ids
    */
-  getBeersByIds(ids: number[]): Observable<Beer[]> {
-    const url = `${this.beersUrl}?ids=${ids.join('|')}`;
-    return this.httpClient.get<Beer[]>(url);
+  fetchBeersByIds(ids: number[]): Observable<Beer[]> {
+    const params = new HttpParams().set('ids', ids.join('|'));
+    console.debug(`search beers with: ${JSON.stringify(params)}`);
+    return this.httpClient.get<Beer[]>(this.beersUrl, {params: params});
   }
 
   /**
-   * GET beers by specified name
-   * @param name
+   * GET beers with specified conditions
+   * @param searchCondition
+   * @param page
+   * @param perPage
    */
-  getBeersByName(name: string): Observable<Beer[]> {
-    const url = `${this.beersUrl}?beer_name=${name}`;
-    return this.httpClient.get<Beer[]>(url);
+  fetchBeerPageByConditions(searchCondition?: SearchCondition, page: number = 1, perPage: number = 30): Observable<Beer[]> {
+    let params = new HttpParams();
+    if (searchCondition) {
+      searchCondition.name ? params = params.append('beer_name', searchCondition.name) : null;
+      searchCondition.abvLower ? params = params.append('abv_gt', searchCondition.abvLower - 1) : null;
+      searchCondition.abvUpper ? params = params.append('abv_lt', searchCondition.abvUpper + 1) : null;
+      searchCondition.ibuLower ? params = params.append('ibu_gt', searchCondition.ibuLower - 1) : null;
+      searchCondition.ibuUpper ? params = params.append('ibu_lt', searchCondition.ibuUpper + 1) : null;
+      searchCondition.ebcLower ? params = params.append('ebc_gt', searchCondition.ebcLower - 1) : null;
+      searchCondition.ebcUpper ? params = params.append('ebc_lt', searchCondition.ebcUpper + 1) : null;
+      searchCondition.brewedAfter ? params = params.append('brewed_after', this.formatDate(searchCondition.brewedAfter)) : null;
+      searchCondition.brewedBefore ? params = params.append('brewed_before', this.formatDate(searchCondition.brewedBefore)) : null;
+    }
+    params = params.append('page', page);
+    params = params.append('per_page', perPage);
+    console.debug(`search beers with condition: ${JSON.stringify(searchCondition)}`);
+    console.debug(`search beers with params: ${JSON.stringify(params)}`);
+    console.debug(`page: ${page}`);
+    return this.httpClient.get<Beer[]>(this.beersUrl, {params: params});
+  }
+
+  /**
+   * Format date string to suitable format to API
+   * @param dateString
+   * @private
+   */
+  private formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}-${year}`;
   }
 
   /**
@@ -124,4 +193,19 @@ export class BeerService {
       () => new Error('An error occurred. Please try again later.'),
     );
   }
+}
+
+/**
+ * SearchCondition
+ */
+export interface SearchCondition {
+  name?: string;
+  abvLower?: number;
+  abvUpper?: number;
+  ibuLower?: number;
+  ibuUpper?: number;
+  ebcLower?: number;
+  ebcUpper?: number;
+  brewedAfter?: string;
+  brewedBefore?: string;
 }

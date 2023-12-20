@@ -92,7 +92,7 @@ export class HomePage implements OnInit {
   ngOnInit(): void {
     this.fetchRandomBeers();
   }
-  
+
   /**
    * Fetch random beers from API
    * @param event
@@ -101,7 +101,7 @@ export class HomePage implements OnInit {
   private fetchRandomBeers(event?: RefresherCustomEvent) {
     this.isLoadedBeers = false;
     // fetch 3 beers in order
-    this.beerService.getRandomBeer()
+    this.beerService.fetchRandomBeer()
       .pipe(
         concatMap(firstBeer => {
           this.beer1 = firstBeer;
@@ -109,7 +109,7 @@ export class HomePage implements OnInit {
             ? firstBeer.image_url
             : this.ALT_IMAGE_URL;
           // start second call
-          return this.beerService.getRandomBeer();
+          return this.beerService.fetchRandomBeer();
         }),
         concatMap(secondBeer => {
           this.beer2 = secondBeer;
@@ -117,7 +117,7 @@ export class HomePage implements OnInit {
             ? secondBeer.image_url
             : this.ALT_IMAGE_URL;
           // start third call
-          return this.beerService.getRandomBeer();
+          return this.beerService.fetchRandomBeer();
         })
       )
       .subscribe(thirdBeer => {
