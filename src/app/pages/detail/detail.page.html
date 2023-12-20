@@ -48,7 +48,7 @@
       <!--      <ion-item lines="none" class="ion-text-center">-->
       <div class="ion-text-center">
         <ion-label>IBU: {{ beer.ibu }}
-          <ion-progress-bar [value]="beer.ibu / 100 < 1 ? beer.ibu / 100 : 1"></ion-progress-bar>
+          <ion-progress-bar id="progressbar" [value]="ibuIndex"></ion-progress-bar>
         </ion-label>
       </div>
       <!--      </ion-item>-->

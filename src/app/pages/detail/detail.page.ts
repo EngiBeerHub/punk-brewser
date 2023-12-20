@@ -89,6 +89,8 @@ export class DetailPage implements OnInit {
   imageUrl?: string;
   beerColor!: string;
   isFavorite = false;
+  ibuIndex = 0;
+  ibuValue = 0;
   private readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
 
   constructor(private storage: StorageService, private animationCtrl: AnimationController, private beerService: BeerService) {
@@ -101,8 +103,19 @@ export class DetailPage implements OnInit {
     this.beer = routerParam.beer;
     this.isFavorite = routerParam.isFavorite;
     this.beerColor = this.beerService.getSrmColor(this.beer.srm);
+    this.ibuValue = this.beer.ibu / 100;
 
     this.imageUrl = this.beer.image_url ?? this.altImageUrl;
+  }
+
+  ionViewDidEnter() {
+    // animate progressbar according to IBU value
+    const interval = setInterval(() => {
+      this.ibuIndex += 0.01;
+      if (this.ibuIndex >= this.ibuValue) {
+        clearInterval(interval);
+      }
+    }, 7.5);
   }
 
   /**
