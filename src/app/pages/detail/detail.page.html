@@ -15,10 +15,26 @@
         <ion-grid class="ion-no-padding">
           <ion-row class="ion-align-items-center">
             <ion-col size="1.5">
+              <!-- beer icon to show SRM visually -->
               <div style="display: flex; align-items: center">
-                <ion-icon *ngIf="beer.srm" name="beer" [style.color]="beerColor" style="padding-right: 4px"></ion-icon>
+                <ion-icon id="beer-icon" *ngIf="beer.srm" name="beer" [style.color]="beerColor"></ion-icon>
               </div>
+
+              <!-- popover for SRM description -->
+              <ion-popover trigger="beer-icon" triggerAction="click">
+                <ng-template>
+                  <ion-content class="ion-padding">
+                    <ion-label>
+                      SRM: {{ beer.srm }}
+                      <br>
+                      The SRM is a color scale that measures the degree of darkness in a beer's color, ranging from pale
+                      straw to deep black.The scale ranges from 1 to 40+.
+                    </ion-label>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
             </ion-col>
+
             <ion-col size="10.5">
               <div style="display: flex; align-items: center">{{ beer.name }}</div>
             </ion-col>
@@ -46,11 +62,22 @@
       </div>
 
       <!--      <ion-item lines="none" class="ion-text-center">-->
-      <div class="ion-text-center">
-        <ion-label>IBU: {{ beer.ibu }}
-          <ion-progress-bar id="progressbar" [value]="ibuIndex"></ion-progress-bar>
+      <div style="display: flex; align-items: center; justify-content: center">
+        <ion-label>
+          IBU: {{ beer.ibu }}
         </ion-label>
+        <ion-icon id="information" name="information-circle-outline" style="margin-left: 4px"></ion-icon>
       </div>
+      <ion-popover trigger="information" triggerAction="click">
+        <ng-template>
+          <ion-content class="ion-padding">
+            <ion-label>
+              International Bitterness Units is a scale that measures a beer's bitterness.
+            </ion-label>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+      <ion-progress-bar id="progressbar" [value]="ibuIndex"></ion-progress-bar>
       <!--      </ion-item>-->
 
       <!--   description   -->
@@ -66,23 +93,30 @@
           <ion-item-divider>
             <ion-label>Summary</ion-label>
           </ion-item-divider>
+
           <ion-item>
             <ion-label>First Brewed: {{ beer.first_brewed }}</ion-label>
           </ion-item>
+
           <ion-item>
             <ion-label>Ph: {{ beer.ph }}</ion-label>
           </ion-item>
+
           <ion-item>
             <ion-label>Contributed By:<br>{{ beer.contributed_by }}</ion-label>
           </ion-item>
+
           <ion-item lines="none">
             <ion-label>Yeast:<br>{{ beer.ingredients.yeast }}</ion-label>
           </ion-item>
+
         </ion-item-group>
+
         <ion-item-group>
           <ion-item-divider>
             <ion-label>Malt</ion-label>
           </ion-item-divider>
+
           <ion-list>
             <ion-item *ngFor="let malt of beer.ingredients.malt; let isLast = last" [lines]="isLast ? 'none' : 'inset'">
               <ion-label>
@@ -91,10 +125,12 @@
             </ion-item>
           </ion-list>
         </ion-item-group>
+
         <ion-item-group>
           <ion-item-divider>
             <ion-label>Hop</ion-label>
           </ion-item-divider>
+
           <ion-list>
             <ion-item *ngFor="let hop of beer.ingredients.hops; let isLast = last" [lines]="isLast ? 'none' : 'inset'">
               <ion-label>
@@ -103,10 +139,12 @@
             </ion-item>
           </ion-list>
         </ion-item-group>
+
         <ion-item-group>
           <ion-item-divider>
             <ion-label>Food Pairing</ion-label>
           </ion-item-divider>
+
           <ion-list>
             <ion-item *ngFor="let pairing of beer.food_pairing; let isLast = last" [lines]="isLast ? 'none' : 'inset'">
               <ion-label>{{ pairing }}</ion-label>

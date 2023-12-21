@@ -22,7 +22,7 @@ import {StorageService} from "../../services/storage.service";
       <ion-card button="true" (click)="onClickCard()">
           <ion-card-header>
               <ion-card-title *ngIf="useTitle">{{ beer.name }}</ion-card-title>
-              <ion-card-subtitle *ngIf="!useTitle">{{ beer.name }}</ion-card-subtitle>
+              <ion-card-subtitle *ngIf="!useTitle" style="color: black">{{ beer.name }}</ion-card-subtitle>
           </ion-card-header>
 
           <ion-card-content>

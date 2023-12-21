@@ -21,6 +21,7 @@ import {
   IonItemGroup,
   IonLabel,
   IonList,
+  IonPopover,
   IonProgressBar,
   IonRefresher,
   IonRefresherContent,
@@ -33,7 +34,7 @@ import {
 } from "@ionic/angular/standalone";
 import {Beer} from "../../models/beer";
 import {addIcons} from "ionicons";
-import {beer, beerOutline, starOutline, water} from "ionicons/icons";
+import {beer, beerOutline, informationCircleOutline, starOutline, water} from "ionicons/icons";
 import {StorageService} from "../../services/storage.service";
 import {BeerService} from "../../services/beer.service";
 
@@ -81,7 +82,8 @@ export interface RouterParameter {
     IonGrid,
     IonRow,
     IonCol,
-    IonProgressBar
+    IonProgressBar,
+    IonPopover
   ]
 })
 export class DetailPage implements OnInit {
@@ -94,7 +96,7 @@ export class DetailPage implements OnInit {
   private readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
 
   constructor(private storage: StorageService, private animationCtrl: AnimationController, private beerService: BeerService) {
-    addIcons({starOutline, beer, beerOutline, water});
+    addIcons({starOutline, beer, beerOutline, informationCircleOutline, water});
   }
 
   ngOnInit(): void {
@@ -108,7 +110,7 @@ export class DetailPage implements OnInit {
     this.imageUrl = this.beer.image_url ?? this.altImageUrl;
   }
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     // animate progressbar according to IBU value
     const interval = setInterval(() => {
       this.ibuIndex += 0.01;
