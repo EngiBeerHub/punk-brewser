@@ -30,7 +30,8 @@ import {
   IonText,
   IonThumbnail,
   IonTitle,
-  IonToolbar
+  IonToolbar,
+  ToastController
 } from "@ionic/angular/standalone";
 import {Beer} from "../../models/beer";
 import {addIcons} from "ionicons";
@@ -95,7 +96,7 @@ export class DetailPage implements OnInit {
   ibuValue = 0;
   private readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private storage: StorageService, private animationCtrl: AnimationController, private beerService: BeerService) {
+  constructor(private storage: StorageService, private animationCtrl: AnimationController, private beerService: BeerService, private toastController: ToastController) {
     addIcons({starOutline, beer, beerOutline, informationCircleOutline, water});
   }
 
@@ -126,6 +127,7 @@ export class DetailPage implements OnInit {
    */
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
+    void this.showToast();
     this.toggleFavorite();
   }
 
@@ -153,5 +155,19 @@ export class DetailPage implements OnInit {
       this.isFavorite = true;
       this.storage.add(this.beer.id);
     }
+  }
+
+  /**
+   * Show toast for adding/removing favorites
+   * @private
+   */
+  private async showToast() {
+    const toast = await this.toastController.create({
+      position: 'top',
+      icon: 'checkmark-circle-outline',
+      message: this.isFavorite ? `Removed ${this.beer.name} from favorites.` : `Added ${this.beer.name} to favorites.`,
+      duration: 1500
+    });
+    await toast.present();
   }
 }

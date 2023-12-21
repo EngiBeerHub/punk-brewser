@@ -11,38 +11,26 @@
   </div>
   <!-- beer list -->
   <ng-template #list>
-    <ion-list *ngIf="isLoadedBeers else skeleton">
-      <ion-item *ngFor="let beer of favBeers; index as i; trackBy: trackByBeerId" (click)="onClickItem(beer)">
-        <ion-thumbnail slot="start">
-          <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL" (ionImgWillLoad)="onLoadImage($event)"
-                   style="object-fit: contain;"></ion-img>
-        </ion-thumbnail>
-
-        <ion-label>{{ beer.name }}</ion-label>
-
-        <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event, beer.id)">
-          <!-- filled if favorite -->
-          <ion-icon *ngIf="isFavorite(beer.id) else notFavorite" name="star" color="warning" slot="end"></ion-icon>
-          <ng-template #notFavorite>
-            <ion-icon name="star-outline" color="medium" slot="end"></ion-icon>
-          </ng-template>
-        </ion-button>
-      </ion-item>
-    </ion-list>
+    <ion-content *ngIf="isLoadedBeers else skeleton" class="ion-padding-horizontal">
+      <div *ngFor="let beer of favBeers; index as i; trackBy: trackByBeerId; let isLast = last"
+           class="ion-margin-top" [ngClass]="{'ion-margin-bottom': isLast}">
+        <app-card-summary [beer]="beer"></app-card-summary>
+      </div>
+    </ion-content>
   </ng-template>
 
   <!-- show skeleton while loading -->
   <ng-template #skeleton>
-    <ion-list>
-      <ion-item *ngFor="let item of skeletonArray">
-        <ion-thumbnail slot="start">
-          <ion-skeleton-text animated="true"></ion-skeleton-text>
-        </ion-thumbnail>
-
-        <ion-label>
-          <ion-skeleton-text animated="true"></ion-skeleton-text>
-        </ion-label>
-      </ion-item>
-    </ion-list>
+    <ion-content class="ion-padding-horizontal">
+      <div class="ion-margin-top">
+        <app-skeleton-summary></app-skeleton-summary>
+      </div>
+      <div class="ion-margin-top">
+        <app-skeleton-summary></app-skeleton-summary>
+      </div>
+      <div class="ion-margin-top">
+        <app-skeleton-summary></app-skeleton-summary>
+      </div>
+    </ion-content>
   </ng-template>
 </ion-content>

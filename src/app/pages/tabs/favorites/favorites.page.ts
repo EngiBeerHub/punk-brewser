@@ -23,13 +23,15 @@ import {StorageService} from "../../../services/storage.service";
 import {Beer} from "../../../models/beer";
 import {BeerService} from "../../../services/beer.service";
 import {Router} from "@angular/router";
+import {CardSummaryComponent} from "../../../components/card-summary/card-summary.component";
+import {SkeletonSummaryComponent} from "../../../components/skeleton-summary/skeleton-summary.component";
 
 @Component({
   selector: 'app-favorites',
   templateUrl: './favorites.page.html',
   styleUrls: ['./favorites.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonContent, IonHeader, IonToolbar, IonTitle, IonImg, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonLabel, IonList, IonSkeletonText, IonThumbnail, IonIcon, IonButton, IonText]
+  imports: [CommonModule, FormsModule, IonContent, IonHeader, IonToolbar, IonTitle, IonImg, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonLabel, IonList, IonSkeletonText, IonThumbnail, IonIcon, IonButton, IonText, CardSummaryComponent, SkeletonSummaryComponent]
 })
 export class FavoritesPage {
   favIds: number[] = [];
