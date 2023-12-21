@@ -11,17 +11,17 @@
   </div>
   <!-- beer list -->
   <ng-template #list>
-    <ion-content *ngIf="isLoadedBeers else skeleton" class="ion-padding-horizontal">
+    <div *ngIf="isLoadedBeers else skeleton" class="ion-padding-horizontal">
       <div *ngFor="let beer of favBeers; index as i; trackBy: trackByBeerId; let isLast = last"
            class="ion-margin-top" [ngClass]="{'ion-margin-bottom': isLast}">
         <app-card-summary [beer]="beer"></app-card-summary>
       </div>
-    </ion-content>
+    </div>
   </ng-template>
 
   <!-- show skeleton while loading -->
   <ng-template #skeleton>
-    <ion-content class="ion-padding-horizontal">
+    <div class="ion-padding-horizontal">
       <div class="ion-margin-top">
         <app-skeleton-summary></app-skeleton-summary>
       </div>
@@ -31,6 +31,6 @@
       <div class="ion-margin-top">
         <app-skeleton-summary></app-skeleton-summary>
       </div>
-    </ion-content>
+    </div>
   </ng-template>
 </ion-content>
