@@ -2,7 +2,6 @@ import {Component, TrackByFunction} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {
-  AnimationController,
   IonButton,
   IonContent,
   IonHeader,
@@ -42,7 +41,7 @@ export class FavoritesPage {
   });
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private storageService: StorageService, private beerService: BeerService, private router: Router, private animationCtrl: AnimationController) {
+  constructor(private storageService: StorageService, private beerService: BeerService, private router: Router) {
   }
 
   ionViewWillEnter() {
@@ -58,14 +57,6 @@ export class FavoritesPage {
   }
 
   /**
-   * Check if stored as favorite
-   * @param beerId
-   */
-  isFavorite(beerId: number): boolean {
-    return this.storageService.includes(beerId);
-  }
-
-  /**
    * Tracking function to optimize loading
    * @param index
    * @param beer
@@ -77,7 +68,7 @@ export class FavoritesPage {
    * @param beer
    */
   onClickItem(beer: Beer) {
-    void this.router.navigate(['/detail'], {state: {beer: beer, isFavorite: this.isFavorite(beer.id)}});
+    void this.router.navigate(['/detail'], {state: {beer: beer, isFavorite: this.storageService.isFavorite(beer.id)}});
   }
 
   /**
@@ -87,30 +78,6 @@ export class FavoritesPage {
    */
   onClickFavButton(event: MouseEvent, beerId: number) {
     event.stopPropagation();
-    this.toggleFavorite(beerId);
-  }
-
-  /**
-   * Handle load image and add fade in animation
-   * @param event
-   */
-  onLoadImage(event: any) {
-    const animation = this.animationCtrl.create()
-      .addElement(event.target)
-      .duration(500)
-      .fromTo('opacity', '0', '1');
-    void animation.play();
-  }
-
-  /**
-   * Toggle favorite status and update storage
-   * @private
-   */
-  private toggleFavorite(beerId: number) {
-    if (this.isFavorite(beerId)) {
-      this.storageService.remove(beerId);
-    } else {
-      this.storageService.add(beerId);
-    }
+    this.storageService.toggleFavorite(beerId);
   }
 }

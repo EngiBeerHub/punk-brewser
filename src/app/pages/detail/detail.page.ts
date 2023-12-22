@@ -38,6 +38,7 @@ import {addIcons} from "ionicons";
 import {beer, beerOutline, informationCircleOutline, starOutline, water} from "ionicons/icons";
 import {StorageService} from "../../services/storage.service";
 import {BeerService} from "../../services/beer.service";
+import {FadeInIonImageDirective} from "../../directives/fade-in-ion-image.directive";
 
 /**
  * state passed from parent component
@@ -84,7 +85,8 @@ export interface RouterParameter {
     IonRow,
     IonCol,
     IonProgressBar,
-    IonPopover
+    IonPopover,
+    FadeInIonImageDirective
   ]
 })
 export class DetailPage implements OnInit {
@@ -132,28 +134,16 @@ export class DetailPage implements OnInit {
   }
 
   /**
-   * Handle load image and add fade in animation
-   * @param event
-   */
-  onLoadImage(event: any) {
-    const animation = this.animationCtrl.create()
-      .addElement(event.target)
-      .duration(500)
-      .fromTo('opacity', '0', '1');
-    void animation.play();
-  }
-
-  /**
    * Toggle favorite status and update storage
    * @private
    */
   private toggleFavorite() {
     if (this.isFavorite) {
       this.isFavorite = false;
-      this.storage.remove(this.beer.id);
+      this.storage.toggleFavorite(this.beer.id);
     } else {
       this.isFavorite = true;
-      this.storage.add(this.beer.id);
+      this.storage.toggleFavorite(this.beer.id);
     }
   }
 

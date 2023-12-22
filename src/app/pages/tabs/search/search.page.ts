@@ -1,6 +1,5 @@
 import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {
-  AnimationController,
   IonAvatar,
   IonButton,
   IonButtons,
@@ -42,6 +41,7 @@ import {Router} from "@angular/router";
 import {StorageService} from "../../../services/storage.service";
 import {Keyboard} from "@capacitor/keyboard";
 import {FormsModule} from "@angular/forms";
+import {FadeInIonImageDirective} from "../../../directives/fade-in-ion-image.directive";
 
 // Range limit
 interface Range {
@@ -60,7 +60,7 @@ interface RangeValue {
   templateUrl: 'search.page.html',
   styleUrls: ['search.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, NgForOf, IonAvatar, IonImg, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonThumbnail, NgIf, IonSkeletonText, IonIcon, IonButton, IonSearchbar, IonChip, IonSegment, IonSegmentButton, IonFab, IonFabButton, IonModal, IonButtons, IonFooter, IonRange, IonDatetimeButton, IonDatetime, IonText, IonCheckbox, IonGrid, IonRow, IonCol, FormsModule],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, NgForOf, IonAvatar, IonImg, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonThumbnail, NgIf, IonSkeletonText, IonIcon, IonButton, IonSearchbar, IonChip, IonSegment, IonSegmentButton, IonFab, IonFabButton, IonModal, IonButtons, IonFooter, IonRange, IonDatetimeButton, IonDatetime, IonText, IonCheckbox, IonGrid, IonRow, IonCol, FormsModule, FadeInIonImageDirective],
 })
 export class SearchPage implements OnInit {
   // number of skeleton item while loading
@@ -95,7 +95,7 @@ export class SearchPage implements OnInit {
 
   searchCondition?: SearchCondition;
 
-  constructor(private beerService: BeerService, private storage: StorageService, private router: Router, private animationCtrl: AnimationController) {
+  constructor(private beerService: BeerService, private storageService: StorageService, private router: Router) {
   }
 
   ngOnInit() {
@@ -134,7 +134,7 @@ export class SearchPage implements OnInit {
    * @param beerId
    */
   isFavorite(beerId: number): boolean {
-    return this.storage.includes(beerId);
+    return this.storageService.isFavorite(beerId);
   }
 
   /**
@@ -189,27 +189,7 @@ export class SearchPage implements OnInit {
    */
   onClickFavButton(event: MouseEvent, beerId: number) {
     event.stopPropagation();
-    this.toggleFavorite(beerId);
-  }
-
-  onLoadImage(event: any) {
-    const animation = this.animationCtrl.create()
-      .addElement(event.target)
-      .duration(500)
-      .fromTo('opacity', '0', '1');
-    void animation.play();
-  }
-
-  /**
-   * Toggle favorite status and update storage
-   * @private
-   */
-  private toggleFavorite(beerId: number) {
-    if (this.isFavorite(beerId)) {
-      this.storage.remove(beerId);
-    } else {
-      this.storage.add(beerId);
-    }
+    this.storageService.toggleFavorite(beerId);
   }
 
   /**
@@ -222,13 +202,6 @@ export class SearchPage implements OnInit {
     this.searchText = event.target.value;
     this.updateSearchCondition();
     this.searchWithCondition();
-
-    // if (event.target.value) { // if some name searched
-    //   this.searchWithCondition();
-    // } else if (event.target.value === '') { // if entered with blank, fetch all beers again
-    //   // Fetch first page again
-    //   this.fetchFirstPage();
-    // }
   }
 
   /**

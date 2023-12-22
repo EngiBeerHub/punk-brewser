@@ -48,7 +48,7 @@
       <!--   prevent height change from lazy loading image   -->
       <div class="img-container">
         <!--    lazy loading image    -->
-        <ion-img [src]="imageUrl" (ionImgWillLoad)="onLoadImage($event)"></ion-img>
+        <ion-img [src]="imageUrl" appFadeInIonImage></ion-img>
       </div>
 
       <!-- favorite button -->

@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {
-  AnimationController,
   IonButton,
   IonCard,
   IonCardContent,
@@ -15,6 +14,7 @@ import {NgIf} from "@angular/common";
 import {Beer} from "../../models/beer";
 import {Router} from "@angular/router";
 import {StorageService} from "../../services/storage.service";
+import {FadeInIonImageDirective} from "../../directives/fade-in-ion-image.directive";
 
 @Component({
   selector: 'app-card-summary',
@@ -29,15 +29,15 @@ import {StorageService} from "../../services/storage.service";
               <!-- prevent height change from lazy loading image -->
               <div class="img-container">
                   <!-- lazy loading image -->
-                  <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL"
-                           (ionImgWillLoad)="onLoadImage($event)"></ion-img>
+                  <ion-img [src]="beer.image_url ? beer.image_url : ALT_IMAGE_URL" appFadeInIonImage></ion-img>
               </div>
 
               <!-- favorite button -->
               <div class="button-container">
                   <ion-button class="ion-no-margin" fill="clear" (click)="onClickFavButton($event)">
                       <!-- filled if favorite -->
-                      <ion-icon *ngIf="isFavorite() else notFavorite" name="star" color="warning"></ion-icon>
+                      <ion-icon *ngIf="isFavorite() else notFavorite" name="star"
+                                color="warning"></ion-icon>
                       <ng-template #notFavorite>
                           <ion-icon name="star-outline" color="medium"></ion-icon>
                       </ng-template>
@@ -79,6 +79,7 @@ import {StorageService} from "../../services/storage.service";
     IonIcon,
     IonImg,
     NgIf,
+    FadeInIonImageDirective,
   ]
 })
 export class CardSummaryComponent implements OnInit {
@@ -88,7 +89,7 @@ export class CardSummaryComponent implements OnInit {
   // isFavorite = false;
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private router: Router, private storage: StorageService, private toastController: ToastController, private animationCtrl: AnimationController) {
+  constructor(private router: Router, private storageService: StorageService, private toastController: ToastController) {
   }
 
   ngOnInit(): void {
@@ -99,7 +100,7 @@ export class CardSummaryComponent implements OnInit {
   }
 
   isFavorite(): boolean {
-    return this.storage.includes(this.beer.id);
+    return this.storageService.isFavorite(this.beer.id);
   }
 
   /**
@@ -116,33 +117,8 @@ export class CardSummaryComponent implements OnInit {
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
     void this.showToast();
-    this.toggleFavorite();
-  }
-
-  /**
-   * Handle load image and add fade in animation
-   * @param event
-   */
-  onLoadImage(event: any) {
-    const animation = this.animationCtrl.create()
-      .addElement(event.target)
-      .duration(500)
-      .fromTo('opacity', '0', '1');
-    void animation.play();
-  }
-
-  /**
-   * Toggle favorite status and update storage
-   * @private
-   */
-  private toggleFavorite() {
-    if (this.isFavorite()) {
-      // this.isFavorite = false;
-      this.storage.remove(this.beer.id);
-    } else {
-      // this.isFavorite = true;
-      this.storage.add(this.beer.id);
-    }
+    this.storageService.toggleFavorite(this.beer.id);
+    // this.toggleFavorite();
   }
 
   /**
@@ -153,7 +129,7 @@ export class CardSummaryComponent implements OnInit {
     const toast = await this.toastController.create({
       position: 'top',
       icon: 'checkmark-circle-outline',
-      message: this.isFavorite() ? `Removed ${this.beer.name} from favorites.` : `Added ${this.beer.name} to favorites.`,
+      message: this.storageService.isFavorite(this.beer.id) ? `Removed ${this.beer.name} from favorites.` : `Added ${this.beer.name} to favorites.`,
       duration: 1500
     });
     await toast.present();
