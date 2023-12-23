@@ -35,9 +35,7 @@ export class FavoritesPage {
   favIds: number[] = [];
   favBeers: Beer[] = [];
   isLoadedBeers = false;
-  skeletonArray = Array.from({length: 3}, (_, index) => {
-    index++;
-  });
+  skeletonArray = Array.from({length: 3});
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
   constructor(private storageService: StorageService, private beerService: BeerService) {

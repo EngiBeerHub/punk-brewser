@@ -64,9 +64,7 @@ interface RangeValue {
 })
 export class SearchPage implements OnInit {
   // number of skeleton item while loading
-  readonly skeletonArray = Array.from({length: 15}, (_, index) => {
-    index++;
-  });
+  readonly skeletonArray = Array.from({length: 15});
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
   readonly defaultPage = 1;
   pageIndex = this.defaultPage;

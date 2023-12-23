@@ -25,6 +25,10 @@ export class OthersPage {
   constructor(private router: Router) {
   }
 
+  onClickPrivacyPolicy() {
+    void this.router.navigate(['/privacy-policy']);
+  }
+
   onClickLicenses() {
     void this.router.navigate(['/licenses']);
   }

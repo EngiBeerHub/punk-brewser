@@ -13,4 +13,8 @@ export const routes: Routes = [
     path: 'licenses',
     loadComponent: () => import('./pages/licenses/licenses.page').then(m => m.LicensesPage)
   },
+  {
+    path: 'privacy-policy',
+    loadComponent: () => import('./pages/privacy-policy/privacy-policy.page').then( m => m.PrivacyPolicyPage)
+  },
 ];
