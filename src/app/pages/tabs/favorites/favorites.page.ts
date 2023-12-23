@@ -21,7 +21,6 @@ import {
 import {StorageService} from "../../../services/storage.service";
 import {Beer} from "../../../models/beer";
 import {BeerService} from "../../../services/beer.service";
-import {Router} from "@angular/router";
 import {CardSummaryComponent} from "../../../components/card-summary/card-summary.component";
 import {SkeletonSummaryComponent} from "../../../components/skeleton-summary/skeleton-summary.component";
 
@@ -36,12 +35,12 @@ export class FavoritesPage {
   favIds: number[] = [];
   favBeers: Beer[] = [];
   isLoadedBeers = false;
-  skeletonArray = Array.from({length: 15}, (_, index) => {
+  skeletonArray = Array.from({length: 3}, (_, index) => {
     index++;
   });
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private storageService: StorageService, private beerService: BeerService, private router: Router) {
+  constructor(private storageService: StorageService, private beerService: BeerService) {
   }
 
   ionViewWillEnter() {
@@ -62,22 +61,4 @@ export class FavoritesPage {
    * @param beer
    */
   trackByBeerId: TrackByFunction<Beer> = (index: number, beer: Beer) => beer.id;
-
-  /**
-   * Handle click item
-   * @param beer
-   */
-  onClickItem(beer: Beer) {
-    void this.router.navigate(['/detail'], {state: {beer: beer, isFavorite: this.storageService.isFavorite(beer.id)}});
-  }
-
-  /**
-   * Handle click Fav button
-   * @param event
-   * @param beerId
-   */
-  onClickFavButton(event: MouseEvent, beerId: number) {
-    event.stopPropagation();
-    this.storageService.toggleFavorite(beerId);
-  }
 }

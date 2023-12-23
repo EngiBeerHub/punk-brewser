@@ -37,11 +37,11 @@ import {BeerService, SearchCondition} from "../../../services/beer.service";
 import {Beer} from "../../../models/beer";
 import {NgForOf, NgIf} from "@angular/common";
 import {DatetimeCustomEvent, InfiniteScrollCustomEvent, RangeCustomEvent, SearchbarCustomEvent} from "@ionic/angular";
-import {Router} from "@angular/router";
 import {StorageService} from "../../../services/storage.service";
 import {Keyboard} from "@capacitor/keyboard";
 import {FormsModule} from "@angular/forms";
 import {FadeInIonImageDirective} from "../../../directives/fade-in-ion-image.directive";
+import {NavigationService} from "../../../services/navigation.service";
 
 // Range limit
 interface Range {
@@ -95,7 +95,7 @@ export class SearchPage implements OnInit {
 
   searchCondition?: SearchCondition;
 
-  constructor(private beerService: BeerService, private storageService: StorageService, private router: Router) {
+  constructor(private beerService: BeerService, private storageService: StorageService, private navigationService: NavigationService) {
   }
 
   ngOnInit() {
@@ -179,7 +179,7 @@ export class SearchPage implements OnInit {
    * @param beer
    */
   onClickItem(beer: Beer) {
-    void this.router.navigate(['/detail'], {state: {beer: beer, isFavorite: this.isFavorite(beer.id)}});
+    this.navigationService.navigateToDetail(beer, this.isFavorite(beer.id));
   }
 
   /**

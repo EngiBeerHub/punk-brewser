@@ -22,13 +22,7 @@
   <!-- show skeleton while loading -->
   <ng-template #skeleton>
     <div class="ion-padding-horizontal">
-      <div class="ion-margin-top">
-        <app-skeleton-summary></app-skeleton-summary>
-      </div>
-      <div class="ion-margin-top">
-        <app-skeleton-summary></app-skeleton-summary>
-      </div>
-      <div class="ion-margin-top">
+      <div *ngFor="let skeleton of skeletonArray" class="ion-margin-top">
         <app-skeleton-summary></app-skeleton-summary>
       </div>
     </div>

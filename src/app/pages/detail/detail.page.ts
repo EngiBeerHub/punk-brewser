@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {
-  AnimationController,
   IonBackButton,
   IonButton,
   IonButtons,
@@ -30,8 +29,7 @@ import {
   IonText,
   IonThumbnail,
   IonTitle,
-  IonToolbar,
-  ToastController
+  IonToolbar
 } from "@ionic/angular/standalone";
 import {Beer} from "../../models/beer";
 import {addIcons} from "ionicons";
@@ -39,6 +37,7 @@ import {beer, beerOutline, informationCircleOutline, starOutline, water} from "i
 import {StorageService} from "../../services/storage.service";
 import {BeerService} from "../../services/beer.service";
 import {FadeInIonImageDirective} from "../../directives/fade-in-ion-image.directive";
+import {ToastService} from "../../services/toast.service";
 
 /**
  * state passed from parent component
@@ -98,7 +97,7 @@ export class DetailPage implements OnInit {
   ibuValue = 0;
   private readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private storage: StorageService, private animationCtrl: AnimationController, private beerService: BeerService, private toastController: ToastController) {
+  constructor(private storage: StorageService, private beerService: BeerService, private toastService: ToastService) {
     addIcons({starOutline, beer, beerOutline, informationCircleOutline, water});
   }
 
@@ -129,7 +128,7 @@ export class DetailPage implements OnInit {
    */
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
-    void this.showToast();
+    void this.toastService.showFavoriteToast(this.isFavorite, this.beer.name);
     this.toggleFavorite();
   }
 
@@ -138,26 +137,7 @@ export class DetailPage implements OnInit {
    * @private
    */
   private toggleFavorite() {
-    if (this.isFavorite) {
-      this.isFavorite = false;
-      this.storage.toggleFavorite(this.beer.id);
-    } else {
-      this.isFavorite = true;
-      this.storage.toggleFavorite(this.beer.id);
-    }
-  }
-
-  /**
-   * Show toast for adding/removing favorites
-   * @private
-   */
-  private async showToast() {
-    const toast = await this.toastController.create({
-      position: 'top',
-      icon: 'checkmark-circle-outline',
-      message: this.isFavorite ? `Removed ${this.beer.name} from favorites.` : `Added ${this.beer.name} to favorites.`,
-      duration: 1500
-    });
-    await toast.present();
+    this.isFavorite = !this.isFavorite;
+    this.storage.toggleFavorite(this.beer.id);
   }
 }

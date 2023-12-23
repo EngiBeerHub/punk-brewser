@@ -7,14 +7,14 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonIcon,
-  IonImg,
-  ToastController
+  IonImg
 } from "@ionic/angular/standalone";
 import {NgIf} from "@angular/common";
 import {Beer} from "../../models/beer";
-import {Router} from "@angular/router";
 import {StorageService} from "../../services/storage.service";
 import {FadeInIonImageDirective} from "../../directives/fade-in-ion-image.directive";
+import {ToastService} from "../../services/toast.service";
+import {NavigationService} from "../../services/navigation.service";
 
 @Component({
   selector: 'app-card-summary',
@@ -89,7 +89,7 @@ export class CardSummaryComponent implements OnInit {
   // isFavorite = false;
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private router: Router, private storageService: StorageService, private toastController: ToastController) {
+  constructor(private storageService: StorageService, private toastService: ToastService, private navigationService: NavigationService) {
   }
 
   ngOnInit(): void {
@@ -107,7 +107,7 @@ export class CardSummaryComponent implements OnInit {
    * Handle click card
    */
   onClickCard() {
-    void this.router.navigate(['/detail'], {state: {beer: this.beer, isFavorite: this.isFavorite()}});
+    this.navigationService.navigateToDetail(this.beer, this.isFavorite());
   }
 
   /**
@@ -116,22 +116,7 @@ export class CardSummaryComponent implements OnInit {
    */
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
-    void this.showToast();
+    void this.toastService.showFavoriteToast(this.storageService.isFavorite(this.beer.id), this.beer.name);
     this.storageService.toggleFavorite(this.beer.id);
-    // this.toggleFavorite();
-  }
-
-  /**
-   * Show toast for adding/removing favorites
-   * @private
-   */
-  private async showToast() {
-    const toast = await this.toastController.create({
-      position: 'top',
-      icon: 'checkmark-circle-outline',
-      message: this.storageService.isFavorite(this.beer.id) ? `Removed ${this.beer.name} from favorites.` : `Added ${this.beer.name} to favorites.`,
-      duration: 1500
-    });
-    await toast.present();
   }
 }
