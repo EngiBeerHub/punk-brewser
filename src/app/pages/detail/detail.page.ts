@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {
-  AnimationController,
   IonBackButton,
   IonButton,
   IonButtons,
@@ -21,6 +20,7 @@ import {
   IonItemGroup,
   IonLabel,
   IonList,
+  IonPopover,
   IonProgressBar,
   IonRefresher,
   IonRefresherContent,
@@ -33,9 +33,11 @@ import {
 } from "@ionic/angular/standalone";
 import {Beer} from "../../models/beer";
 import {addIcons} from "ionicons";
-import {beer, beerOutline, starOutline, water} from "ionicons/icons";
+import {beer, beerOutline, informationCircleOutline, starOutline, water} from "ionicons/icons";
 import {StorageService} from "../../services/storage.service";
 import {BeerService} from "../../services/beer.service";
+import {FadeInIonImageDirective} from "../../directives/fade-in-ion-image.directive";
+import {ToastService} from "../../services/toast.service";
 
 /**
  * state passed from parent component
@@ -81,7 +83,9 @@ export interface RouterParameter {
     IonGrid,
     IonRow,
     IonCol,
-    IonProgressBar
+    IonProgressBar,
+    IonPopover,
+    FadeInIonImageDirective
   ]
 })
 export class DetailPage implements OnInit {
@@ -93,8 +97,8 @@ export class DetailPage implements OnInit {
   ibuValue = 0;
   private readonly altImageUrl = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private storage: StorageService, private animationCtrl: AnimationController, private beerService: BeerService) {
-    addIcons({starOutline, beer, beerOutline, water});
+  constructor(private storage: StorageService, private beerService: BeerService, private toastService: ToastService) {
+    addIcons({starOutline, beer, beerOutline, informationCircleOutline, water});
   }
 
   ngOnInit(): void {
@@ -108,7 +112,7 @@ export class DetailPage implements OnInit {
     this.imageUrl = this.beer.image_url ?? this.altImageUrl;
   }
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     // animate progressbar according to IBU value
     const interval = setInterval(() => {
       this.ibuIndex += 0.01;
@@ -124,19 +128,8 @@ export class DetailPage implements OnInit {
    */
   onClickFavButton(event: MouseEvent) {
     event.stopPropagation();
+    void this.toastService.showFavoriteToast(this.isFavorite, this.beer.name);
     this.toggleFavorite();
-  }
-
-  /**
-   * Handle load image and add fade in animation
-   * @param event
-   */
-  onLoadImage(event: any) {
-    const animation = this.animationCtrl.create()
-      .addElement(event.target)
-      .duration(500)
-      .fromTo('opacity', '0', '1');
-    void animation.play();
   }
 
   /**
@@ -144,12 +137,7 @@ export class DetailPage implements OnInit {
    * @private
    */
   private toggleFavorite() {
-    if (this.isFavorite) {
-      this.isFavorite = false;
-      this.storage.remove(this.beer.id);
-    } else {
-      this.isFavorite = true;
-      this.storage.add(this.beer.id);
-    }
+    this.isFavorite = !this.isFavorite;
+    this.storage.toggleFavorite(this.beer.id);
   }
 }

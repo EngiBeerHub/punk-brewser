@@ -2,7 +2,6 @@ import {Component, TrackByFunction} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {
-  AnimationController,
   IonButton,
   IonContent,
   IonHeader,
@@ -22,25 +21,24 @@ import {
 import {StorageService} from "../../../services/storage.service";
 import {Beer} from "../../../models/beer";
 import {BeerService} from "../../../services/beer.service";
-import {Router} from "@angular/router";
+import {CardSummaryComponent} from "../../../components/card-summary/card-summary.component";
+import {SkeletonSummaryComponent} from "../../../components/skeleton-summary/skeleton-summary.component";
 
 @Component({
   selector: 'app-favorites',
   templateUrl: './favorites.page.html',
   styleUrls: ['./favorites.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonContent, IonHeader, IonToolbar, IonTitle, IonImg, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonLabel, IonList, IonSkeletonText, IonThumbnail, IonIcon, IonButton, IonText]
+  imports: [CommonModule, FormsModule, IonContent, IonHeader, IonToolbar, IonTitle, IonImg, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonLabel, IonList, IonSkeletonText, IonThumbnail, IonIcon, IonButton, IonText, CardSummaryComponent, SkeletonSummaryComponent]
 })
 export class FavoritesPage {
   favIds: number[] = [];
   favBeers: Beer[] = [];
   isLoadedBeers = false;
-  skeletonArray = Array.from({length: 15}, (_, index) => {
-    index++;
-  });
+  skeletonArray = Array.from({length: 3});
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
-  constructor(private storageService: StorageService, private beerService: BeerService, private router: Router, private animationCtrl: AnimationController) {
+  constructor(private storageService: StorageService, private beerService: BeerService) {
   }
 
   ionViewWillEnter() {
@@ -56,59 +54,9 @@ export class FavoritesPage {
   }
 
   /**
-   * Check if stored as favorite
-   * @param beerId
-   */
-  isFavorite(beerId: number): boolean {
-    return this.storageService.includes(beerId);
-  }
-
-  /**
    * Tracking function to optimize loading
    * @param index
    * @param beer
    */
   trackByBeerId: TrackByFunction<Beer> = (index: number, beer: Beer) => beer.id;
-
-  /**
-   * Handle click item
-   * @param beer
-   */
-  onClickItem(beer: Beer) {
-    void this.router.navigate(['/detail'], {state: {beer: beer, isFavorite: this.isFavorite(beer.id)}});
-  }
-
-  /**
-   * Handle click Fav button
-   * @param event
-   * @param beerId
-   */
-  onClickFavButton(event: MouseEvent, beerId: number) {
-    event.stopPropagation();
-    this.toggleFavorite(beerId);
-  }
-
-  /**
-   * Handle load image and add fade in animation
-   * @param event
-   */
-  onLoadImage(event: any) {
-    const animation = this.animationCtrl.create()
-      .addElement(event.target)
-      .duration(500)
-      .fromTo('opacity', '0', '1');
-    void animation.play();
-  }
-
-  /**
-   * Toggle favorite status and update storage
-   * @private
-   */
-  private toggleFavorite(beerId: number) {
-    if (this.isFavorite(beerId)) {
-      this.storageService.remove(beerId);
-    } else {
-      this.storageService.add(beerId);
-    }
-  }
 }

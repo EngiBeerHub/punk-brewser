@@ -6,10 +6,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ionic serve",
-    "build": "ionic build",
-    "ios": "ionic build && ionic cap sync && ionic cap run ios",
-    "ioslive": "ionic build && ionic cap sync && ionic cap run ios -l --external",
-    "android": "ionic build && ionic cap sync && ionic cap run android",
+    "build": "ionic build && node copy-licenses.js",
+    "ios": "ionic build && node copy-licenses.js && ionic cap sync && ionic cap run ios",
+    "ioslive": "ionic build && node copy-licenses.js && ionic cap sync && ionic cap run ios -l --external",
+    "android": "ionic build && node copy-licenses.js && ionic cap sync && ionic cap run android",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
