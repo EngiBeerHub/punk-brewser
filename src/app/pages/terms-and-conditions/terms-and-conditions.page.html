@@ -8,5 +8,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" style="--overflow: hidden;">
-  <iframe [src]="trustedUrl" style="width: 100%; height: 100%; border: none"></iframe>
+  <iframe [src]="trustedUrl" (load)="onIframeLoad()" style="width: 100%; height: 100%; border: none"></iframe>
+  <ion-loading [isOpen]="isLoadingContent"></ion-loading>
 </ion-content>
