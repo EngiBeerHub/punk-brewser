@@ -25,14 +25,23 @@ export class OthersPage {
   constructor(private router: Router) {
   }
 
+  /**
+   * Handle click Privacy Policy
+   */
   onClickPrivacyPolicy() {
     void this.router.navigate(['/privacy-policy']);
   }
 
+  /**
+   * Handle click Terms and Conditions
+   */
   onClickTermsAndConditions() {
     void this.router.navigate(['/terms-and-conditions']);
   }
 
+  /**
+   * Handle click Open Source License
+   */
   onClickLicenses() {
     void this.router.navigate(['/licenses']);
   }

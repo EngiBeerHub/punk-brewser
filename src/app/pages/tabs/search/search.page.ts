@@ -141,28 +141,17 @@ export class SearchPage implements OnInit {
    */
   onScroll(event: InfiniteScrollCustomEvent) {
     // get next page
-    if (this.searchCondition) {
-      this.beerService.fetchBeerPageByConditions(this.searchCondition!, ++this.pageIndex).subscribe({
-        next: fetchedBeers => {
-          this.beers?.push(...fetchedBeers);
-          void event.target.complete();
-        },
-        error: () => {
-          void event.target.complete();
-        }
-      });
-    } else {
-      this.beerService.fetchBeerPageByConditions(undefined, ++this.pageIndex).subscribe({
-          next: fetchedBeers => {
-            this.beers?.push(...fetchedBeers);
-            void event.target.complete();
-          },
-          error: () => {
-            void event.target.complete();
-          }
-        }
-      );
-    }
+    this.beerService.fetchBeerPageByConditions(this.searchCondition, ++this.pageIndex).subscribe({
+      next: fetchedBeers => {
+        this.beers?.push(...fetchedBeers);
+      },
+      complete: () => {
+        void event.target.complete();
+      },
+      error: () => {
+        void event.target.complete();
+      }
+    });
   }
 
   /**
