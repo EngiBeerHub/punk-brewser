@@ -23,6 +23,7 @@ import {Beer} from "../../../models/beer";
 import {BeerService} from "../../../services/beer.service";
 import {CardSummaryComponent} from "../../../components/card-summary/card-summary.component";
 import {SkeletonSummaryComponent} from "../../../components/skeleton-summary/skeleton-summary.component";
+import {InfiniteScrollCustomEvent} from "@ionic/angular";
 
 @Component({
   selector: 'app-favorites',
@@ -36,16 +37,18 @@ export class FavoritesPage {
   favBeers: Beer[] = [];
   isLoadedBeers = false;
   skeletonArray = Array.from({length: 3});
+  pageIndex = 1;
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
 
   constructor(private storageService: StorageService, private beerService: BeerService) {
   }
 
   ionViewWillEnter() {
+    this.pageIndex = 1;
     this.isLoadedBeers = false;
     // fetch favorite beers
     this.favIds = this.storageService.favIds;
-    this.beerService.fetchBeersByIds(this.favIds).subscribe({
+    this.beerService.fetchBeerPageByIds(this.favIds).subscribe({
       next: fetchedBeers => {
         this.favBeers = fetchedBeers;
         this.isLoadedBeers = true;
@@ -59,4 +62,23 @@ export class FavoritesPage {
    * @param beer
    */
   trackByBeerId: TrackByFunction<Beer> = (index: number, beer: Beer) => beer.id;
+
+  /**
+   * Handle infinite scroll event when not search mode
+   * @param event
+   */
+  onScroll(event: InfiniteScrollCustomEvent) {
+    // get next page
+    this.beerService.fetchBeerPageByIds(this.favIds, ++this.pageIndex).subscribe({
+      next: fetchedBeers => {
+        this.favBeers?.push(...fetchedBeers);
+      },
+      complete: () => {
+        void event.target.complete();
+      },
+      error: () => {
+        void event.target.complete();
+      }
+    });
+  }
 }

@@ -66,8 +66,7 @@ export class SearchPage implements OnInit {
   // number of skeleton item while loading
   readonly skeletonArray = Array.from({length: 15});
   readonly ALT_IMAGE_URL = 'https://images.punkapi.com/v2/keg.png';
-  readonly defaultPage = 1;
-  pageIndex = this.defaultPage;
+  pageIndex = 1;
   beers?: Beer[];
   // to show skeleton
   isLoadedBeers = false;
@@ -106,9 +105,8 @@ export class SearchPage implements OnInit {
    * @private
    */
   private fetchFirstPage() {
-    this.resetPageIndex();
-    this.isLoadedBeers = false;
-    this.beerService.fetchBeerPageByConditions(undefined, this.defaultPage).subscribe({
+    this.resetLoad();
+    this.beerService.fetchBeerPageByConditions().subscribe({
         next: fetchedBeers => {
           this.beers = fetchedBeers;
         },
@@ -120,10 +118,11 @@ export class SearchPage implements OnInit {
   }
 
   /**
-   * Reset page index
+   * Reset page index and load state
    * @private
    */
-  private resetPageIndex() {
+  private resetLoad() {
+    this.isLoadedBeers = false;
     this.pageIndex = 1;
   }
 
@@ -325,8 +324,7 @@ export class SearchPage implements OnInit {
    * @private
    */
   private searchWithCondition(page: number = 1) {
-    this.resetPageIndex();
-    this.isLoadedBeers = false;
+    this.resetLoad();
     this.beerService.fetchBeerPageByConditions(this.searchCondition, page).subscribe({
       next: fetchedBeers => {
         this.beers = fetchedBeers;

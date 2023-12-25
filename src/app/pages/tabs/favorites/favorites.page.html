@@ -27,4 +27,9 @@
       </div>
     </div>
   </ng-template>
+
+  <!-- infinite scroll to load next beer list -->
+  <ion-infinite-scroll *ngIf="isLoadedBeers && favBeers.length !== 0" (ionInfinite)="onScroll($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
