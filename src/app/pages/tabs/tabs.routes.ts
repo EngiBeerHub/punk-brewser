@@ -32,9 +32,9 @@ export const routes: Routes = [
           import('./favorites/favorites.page').then(m => m.FavoritesPage),
       },
       {
-        path: 'tab3',
+        path: 'others',
         loadComponent: () =>
-          import('./tab3/tab3.page').then((m) => m.Tab3Page),
+          import('./others/others.page').then((m) => m.OthersPage),
       },
     ],
   },
