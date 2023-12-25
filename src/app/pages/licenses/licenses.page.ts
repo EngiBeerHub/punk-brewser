@@ -15,7 +15,7 @@ import {
   selector: 'app-licenses',
   template: `
       <ion-header [translucent]="true">
-          <ion-toolbar>
+          <ion-toolbar color="primary">
               <ion-buttons>
                   <ion-back-button></ion-back-button>
               </ion-buttons>
