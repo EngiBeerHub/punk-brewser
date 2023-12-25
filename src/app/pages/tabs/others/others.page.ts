@@ -29,6 +29,10 @@ export class OthersPage {
     void this.router.navigate(['/privacy-policy']);
   }
 
+  onClickTermsAndConditions() {
+    void this.router.navigate(['/terms-and-conditions']);
+  }
+
   onClickLicenses() {
     void this.router.navigate(['/licenses']);
   }
