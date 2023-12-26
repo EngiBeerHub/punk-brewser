@@ -125,10 +125,17 @@ export class BeerService {
   /**
    * GET beers by specified IDs
    * @param ids
+   * @param page
+   * @param perPage
    */
-  fetchBeersByIds(ids: number[]): Observable<Beer[]> {
-    const params = new HttpParams().set('ids', ids.join('|'));
-    console.debug(`search beers with: ${JSON.stringify(params)}`);
+  fetchBeerPageByIds(ids: number[], page: number = 1, perPage?: number): Observable<Beer[]> {
+    let params = new HttpParams();
+    params = params.append('ids', ids.join('|'));
+    params = params.append('page', page);
+    perPage ? params = params.append('per_page', perPage) : null;
+    console.debug(`search beers with IDs: ${JSON.stringify(params)}`);
+    console.debug(`search beers with params: ${JSON.stringify(params)}`);
+    console.debug(`page: ${page}`);
     return this.httpClient.get<Beer[]>(this.beersUrl, {params: params});
   }
 
@@ -138,7 +145,7 @@ export class BeerService {
    * @param page
    * @param perPage
    */
-  fetchBeerPageByConditions(searchCondition?: SearchCondition, page: number = 1, perPage: number = 30): Observable<Beer[]> {
+  fetchBeerPageByConditions(searchCondition?: SearchCondition, page: number = 1, perPage?: number): Observable<Beer[]> {
     let params = new HttpParams();
     if (searchCondition) {
       searchCondition.name ? params = params.append('beer_name', searchCondition.name) : null;
@@ -152,7 +159,7 @@ export class BeerService {
       searchCondition.brewedBefore ? params = params.append('brewed_before', this.formatDate(searchCondition.brewedBefore)) : null;
     }
     params = params.append('page', page);
-    params = params.append('per_page', perPage);
+    perPage ? params = params.append('per_page', perPage) : null;
     console.debug(`search beers with condition: ${JSON.stringify(searchCondition)}`);
     console.debug(`search beers with params: ${JSON.stringify(params)}`);
     console.debug(`page: ${page}`);

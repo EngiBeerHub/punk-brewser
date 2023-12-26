@@ -1,11 +1,16 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-searchbar class="ion-margin-top" animated="true" placeholder="Enter beer name" showCancelButton="focus"
-                   (ionChange)="onChangeSearchbar($event)"></ion-searchbar>
+  <ion-toolbar color="primary">
+    <!--    <ion-searchbar class="ion-margin-top" color="light" animated="true" placeholder="Enter beer name"-->
+    <!--                   showCancelButton="focus"-->
+    <!--                   (ionChange)="onChangeSearchbar($event)"></ion-searchbar>-->
+    <ion-title>Search</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-searchbar animated="true" placeholder="Input beer name"
+                 showCancelButton="focus"
+                 (ionChange)="onChangeSearchbar($event)"></ion-searchbar>
   <!-- beer list -->
   <ion-list *ngIf="isLoadedBeers else skeleton">
     <ion-item *ngFor="let beer of beers; index as i; trackBy: trackByBeerId" (click)="onClickItem(beer)">

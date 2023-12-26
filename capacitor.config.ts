@@ -1,9 +1,9 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import {CapacitorConfig} from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'punk-brewser',
-  webDir: 'www',
+  appId: 'io.ionic.punkbrewser',
+  appName: 'Punk Brewser',
+  webDir: 'www/browser',
   server: {
     androidScheme: 'https'
   }
