@@ -13,6 +13,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import {Router} from "@angular/router";
+import {Browser} from "@capacitor/browser";
 
 @Component({
   selector: 'app-others',
@@ -25,10 +26,23 @@ export class OthersPage {
   constructor(private router: Router) {
   }
 
-  onClickPrivacyPolicy() {
-    void this.router.navigate(['/privacy-policy']);
+  /**
+   * Handle click Privacy Policy
+   */
+  async onClickPrivacyPolicy() {
+    await Browser.open({url: 'https://engibeerhub.github.io/punk-brewser-privacy-policy/'});
   }
 
+  /**
+   * Handle click Terms and Conditions
+   */
+  async onClickTermsAndConditions() {
+    await Browser.open({url: 'https://engibeerhub.github.io/punk-brewser-terms-and-conditions/'});
+  }
+
+  /**
+   * Handle click Open Source License
+   */
   onClickLicenses() {
     void this.router.navigate(['/licenses']);
   }
