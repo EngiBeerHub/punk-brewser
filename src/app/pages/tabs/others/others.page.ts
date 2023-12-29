@@ -14,6 +14,7 @@ import {
 } from '@ionic/angular/standalone';
 import {Router} from "@angular/router";
 import {Browser} from "@capacitor/browser";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-others',
@@ -23,6 +24,8 @@ import {Browser} from "@capacitor/browser";
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonIcon, IonList, IonItem, IonLabel, IonNote, IonItemDivider, IonRouterLink],
 })
 export class OthersPage {
+  protected readonly environment = environment;
+  
   constructor(private router: Router) {
   }
 
