@@ -25,7 +25,7 @@ import {environment} from "../../../../environments/environment";
 })
 export class OthersPage {
   protected readonly environment = environment;
-  
+
   constructor(private router: Router) {
   }
 
@@ -48,5 +48,10 @@ export class OthersPage {
    */
   onClickLicenses() {
     void this.router.navigate(['/licenses']);
+  }
+
+  async onClickTextLink(event: Event, url: string) {
+    event.preventDefault();
+    await Browser.open({url: url});
   }
 }
