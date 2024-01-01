@@ -18,12 +18,13 @@
       <ion-icon aria-hidden="true" name="ribbon-sharp" slot="start"></ion-icon>
       <ion-label>Open Source Licenses</ion-label>
     </ion-item>
-    <!--    <ion-item>-->
-    <!--      <ion-icon aria-hidden="true" name="information-circle-outline" slot="start"></ion-icon>-->
-    <!--      <ion-label>About</ion-label>-->
-    <!--    </ion-item>-->
+    <ion-item>
+      <ion-icon aria-hidden="true" name="layers-sharp" slot="start"></ion-icon>
+      <ion-label>Version</ion-label>
+      <ion-label slot="end">{{ environment.version }}</ion-label>
+    </ion-item>
   </ion-list>
   <div class="ion-text-center">
-    <ion-note>Version: {{ environment.version }}</ion-note>
+    <ion-note>Powered by: <a href="#" (click)="onClickTextLink($event, 'https://punkapi.com/')">PUNK API</a></ion-note>
   </div>
 </ion-content>
