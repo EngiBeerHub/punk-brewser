@@ -5,9 +5,11 @@
 
 ## About The Project
 
-<img src="./resources/screenshots/home.png" width="30%">
-<img src="./resources/screenshots/search.png" width="30%">
-<img src="./resources/screenshots/favorites.png" width="30%">
+<div style="display: flex">
+<img src="./resources/screenshots/home.png" width="25%">
+<img src="./resources/screenshots/search.png" width="25%">
+<img src="./resources/screenshots/favorites.png" width="25%">
+</div>
 
 Punk Brewser is a mobile app you can browse any beers from [BrewDog](https://brewdog.com).
 
