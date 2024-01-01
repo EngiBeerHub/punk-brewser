@@ -61,7 +61,6 @@
         </ion-button>
       </div>
 
-      <!--      <ion-item lines="none" class="ion-text-center">-->
       <div style="display: flex; align-items: center; justify-content: center">
         <ion-label>
           IBU: {{ beer.ibu }}
@@ -78,7 +77,6 @@
         </ng-template>
       </ion-popover>
       <ion-progress-bar id="progressbar" [value]="ibuIndex"></ion-progress-bar>
-      <!--      </ion-item>-->
 
       <!--   description   -->
       <div class="ion-margin-top ion-margin-bottom">
@@ -103,11 +101,11 @@
           </ion-item>
 
           <ion-item>
-            <ion-label>Contributed By:<br>{{ beer.contributed_by }}</ion-label>
+            <ion-label class="ion-text-wrap">Contributed By:<br>{{ beer.contributed_by }}</ion-label>
           </ion-item>
 
           <ion-item lines="none">
-            <ion-label>Yeast:<br>{{ beer.ingredients.yeast }}</ion-label>
+            <ion-label class="ion-text-wrap">Yeast:<br>{{ beer.ingredients.yeast }}</ion-label>
           </ion-item>
 
         </ion-item-group>
@@ -119,7 +117,7 @@
 
           <ion-list>
             <ion-item *ngFor="let malt of beer.ingredients.malt; let isLast = last" [lines]="isLast ? 'none' : 'inset'">
-              <ion-label>
+              <ion-label class="ion-text-wrap">
                 {{ malt.name }}({{ malt.amount.value }}{{ malt.amount.unit }})
               </ion-label>
             </ion-item>
@@ -133,7 +131,7 @@
 
           <ion-list>
             <ion-item *ngFor="let hop of beer.ingredients.hops; let isLast = last" [lines]="isLast ? 'none' : 'inset'">
-              <ion-label>
+              <ion-label class="ion-text-wrap">
                 {{ hop.name }}({{ hop.attribute }}, {{ hop.amount.value }}{{ hop.amount.unit }})
               </ion-label>
             </ion-item>
@@ -147,7 +145,7 @@
 
           <ion-list>
             <ion-item *ngFor="let pairing of beer.food_pairing; let isLast = last" [lines]="isLast ? 'none' : 'inset'">
-              <ion-label>{{ pairing }}</ion-label>
+              <ion-label class="ion-text-wrap">{{ pairing }}</ion-label>
             </ion-item>
           </ion-list>
         </ion-item-group>
